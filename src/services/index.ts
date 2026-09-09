@@ -1,4 +1,3 @@
-// Consolidated API service hub re-exporting all modular services
 export * from './apiClient.js';
 export * from './authService.js';
 export * from './projectService.js';
