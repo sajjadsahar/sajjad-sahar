@@ -63,7 +63,20 @@ export interface Project {
   views?: number;
 }
 
-export type CertificateCategory = 'All' | 'Programming' | 'Web Development' | 'AI/ML' | 'Cybersecurity' | 'Cloud' | 'Database' | 'Other';
+export type CertificateCategory = 
+  | 'All' 
+  | 'All Certificates'
+  | 'Artificial Intelligence' 
+  | 'Generative AI' 
+  | 'Data Science' 
+  | 'Programming' 
+  | 'Cloud' 
+  | 'Web Development' 
+  | 'AI/ML' 
+  | 'Cybersecurity' 
+  | 'Database' 
+  | 'Other' 
+  | string;
 
 export interface Certificate {
   id: string;

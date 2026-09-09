@@ -10,10 +10,14 @@ import {
   X, 
   Check, 
   FileText,
-  Image as ImageIcon
+  Clock,
+  KeyRound,
+  Tag,
+  Sparkles
 } from 'lucide-react';
-import { Certificate } from '../../types.js';
+import { Certificate, CertificateCategory } from '../../types.js';
 import { createCertificate, updateCertificate, deleteCertificate, uploadAsset } from '../../services/api.js';
+import { OrganizationLogo } from '../OrganizationLogo.js';
 
 interface AdminCertificatesProps {
   certificates: Certificate[];
@@ -31,17 +35,17 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ certificat
     setIsNew(true);
     setEditingCert({
       title: '',
-      issuingOrganization: 'Meta',
-      issueDate: new Date().toISOString().substring(0, 10),
-      expiryDate: '',
-      certificateId: 'CERT-' + Math.floor(100000 + Math.random() * 900000),
-      fileUrl: 'https://images.unsplash.com/photo-1589330694653-dad6bc01cf0f?auto=format&fit=crop&w=1200&q=80',
+      issuingOrganization: '',
+      issueDate: '',
+      expiryDate: 'Never',
+      certificateId: '',
+      fileUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80',
       fileType: 'image',
-      skillsCovered: ['React', 'Full-Stack Development'],
-      category: 'Web Development',
-      verificationUrl: 'https://coursera.org/verify/',
-      featured: true,
-      description: 'Comprehensive program covering industry-standard engineering patterns.'
+      skillsCovered: [],
+      category: 'Artificial Intelligence / Generative AI',
+      verificationUrl: '',
+      featured: false,
+      description: ''
     });
   };
 
@@ -108,6 +112,22 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ certificat
     }
   };
 
+  const categoryOptions: string[] = [
+    'Data Science / Programming / AI',
+    'Artificial Intelligence / Generative AI',
+    'Artificial Intelligence / Cloud / Generative AI',
+    'Artificial Intelligence',
+    'Artificial Intelligence / AI Literacy',
+    'Web Development / MERN Stack',
+    'Artificial Intelligence / Machine Learning',
+    'Web Development',
+    'Programming',
+    'Data Science',
+    'Cloud',
+    'Database',
+    'Other'
+  ];
+
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       
@@ -115,18 +135,18 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ certificat
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Award className="w-5 h-5 text-emerald-500" />
+            <Award className="w-5 h-5 text-cyan-400" />
             <span>Manage Certificates &amp; Credentials ({certificates.length})</span>
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Showcase verified achievements with live URLs and credential numbers
+            Manage real verified credentials, issuing organizations, IDs, expiration dates, and categories.
           </p>
         </div>
 
         <button
           onClick={startNewCert}
           id="btn-admin-add-cert"
-          className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center gap-1.5 shadow-md shadow-emerald-600/20 transition-all self-start"
+          className="px-4 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs flex items-center gap-1.5 shadow-md shadow-cyan-600/20 transition-all self-start"
         >
           <Plus className="w-4 h-4" />
           <span>Add New Certificate</span>
@@ -143,23 +163,34 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ certificat
                   src={c.fileUrl}
                   alt={c.title}
                   referrerPolicy="no-referrer"
-                  className="w-16 h-12 object-cover rounded-xl shrink-0 bg-slate-950"
+                  className="w-16 h-12 object-cover rounded-xl shrink-0 bg-slate-950 border border-slate-700"
                 />
                 <div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h4 className="font-bold text-sm text-slate-900 dark:text-white">
                       {c.title}
                     </h4>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-semibold">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300 font-semibold flex items-center gap-1">
+                      <OrganizationLogo organization={c.issuingOrganization} className="w-3 h-3" />
                       {c.issuingOrganization}
                     </span>
+                    {c.featured && (
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold flex items-center gap-0.5">
+                        <Sparkles className="w-3 h-3" /> Featured
+                      </span>
+                    )}
                   </div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">
-                    ID: {c.certificateId} • Issued: {c.issueDate} • Category: {c.category}
+                  <div className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5 flex flex-wrap gap-x-3 gap-y-1">
+                    <span><strong>ID:</strong> {c.certificateId}</span>
+                    <span><strong>Issued:</strong> {c.issueDate}</span>
+                    <span><strong>Expires:</strong> {c.expiryDate || 'Never'}</span>
+                    <span><strong>Category:</strong> {c.category}</span>
                   </div>
-                  <div className="text-[11px] font-mono text-slate-400 mt-1">
-                    Skills: {c.skillsCovered.join(', ')}
-                  </div>
+                  {c.skillsCovered && c.skillsCovered.length > 0 && (
+                    <div className="text-[11px] font-mono text-slate-400 mt-1">
+                      Skills: {c.skillsCovered.join(', ')}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -169,8 +200,8 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ certificat
                     href={c.verificationUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:text-emerald-600 text-slate-500 transition-colors"
-                    title="Test Verification Link"
+                    className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:text-cyan-400 text-slate-500 transition-colors"
+                    title="Test Official Verification Link"
                   >
                     <ExternalLink className="w-4 h-4" />
                   </a>
@@ -195,7 +226,7 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ certificat
         </div>
       </div>
 
-      {/* Edit / Add Modal */}
+      {/* Edit / Create Modal */}
       {editingCert && (
         <div 
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto animate-in fade-in"
@@ -232,7 +263,7 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ certificat
                     required
                     value={editingCert.title || ''}
                     onChange={(e) => setEditingCert({ ...editingCert, title: e.target.value })}
-                    placeholder="e.g. Meta Front-End Developer Specialization"
+                    placeholder="e.g. Data Science Essentials With Python"
                     className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                   />
                 </div>
@@ -244,7 +275,7 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ certificat
                     required
                     value={editingCert.issuingOrganization || ''}
                     onChange={(e) => setEditingCert({ ...editingCert, issuingOrganization: e.target.value })}
-                    placeholder="e.g. Meta, DeepLearning.AI, Oracle, Stanford"
+                    placeholder="e.g. Cisco, Google, Google Cloud, Anthropic, Apna College"
                     className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                   />
                 </div>
@@ -258,6 +289,7 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ certificat
                     required
                     value={editingCert.certificateId || ''}
                     onChange={(e) => setEditingCert({ ...editingCert, certificateId: e.target.value })}
+                    placeholder="Exact credential ID"
                     className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-mono"
                   />
                 </div>
@@ -265,27 +297,37 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ certificat
                 <div className="space-y-1">
                   <label className="font-semibold text-slate-700 dark:text-slate-300">Issue Date</label>
                   <input
-                    type="date"
+                    type="text"
                     value={editingCert.issueDate || ''}
                     onChange={(e) => setEditingCert({ ...editingCert, issueDate: e.target.value })}
+                    placeholder="e.g. July 25, 2026 or July 2026"
                     className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-semibold text-slate-700 dark:text-slate-300">Category</label>
+                  <label className="font-semibold text-slate-700 dark:text-slate-300">Expiration Status</label>
+                  <input
+                    type="text"
+                    value={editingCert.expiryDate || ''}
+                    onChange={(e) => setEditingCert({ ...editingCert, expiryDate: e.target.value })}
+                    placeholder="e.g. Never or No Expiration"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-semibold text-slate-700 dark:text-slate-300">Category</label>
+                <div className="flex gap-2">
                   <select
-                    value={editingCert.category || 'Web Development'}
+                    value={editingCert.category || 'Artificial Intelligence'}
                     onChange={(e) => setEditingCert({ ...editingCert, category: e.target.value as any })}
                     className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                   >
-                    <option value="Web Development">Web Development</option>
-                    <option value="Programming">Programming</option>
-                    <option value="AI / Machine Learning">AI / Machine Learning</option>
-                    <option value="Database">Database</option>
-                    <option value="Cybersecurity">Cybersecurity</option>
-                    <option value="Cloud">Cloud</option>
-                    <option value="Other">Other</option>
+                    {categoryOptions.map((cat) => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -300,12 +342,12 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ certificat
                     type="file"
                     accept="image/*,.pdf"
                     onChange={handleFileUpload}
-                    className="text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 dark:file:bg-emerald-950/60 file:text-emerald-700 dark:file:text-emerald-300"
+                    className="text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-50 dark:file:bg-cyan-950/60 file:text-cyan-700 dark:file:text-cyan-300"
                   />
-                  {uploading && <span className="text-emerald-600 text-xs">Uploading...</span>}
+                  {uploading && <span className="text-cyan-600 text-xs">Uploading...</span>}
                 </div>
                 <div className="pt-2">
-                  <span className="text-[11px] text-slate-500">Or enter direct URL:</span>
+                  <span className="text-[11px] text-slate-500">Or enter image/document URL:</span>
                   <input
                     type="text"
                     value={editingCert.fileUrl || ''}
@@ -316,12 +358,14 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ certificat
               </div>
 
               <div className="space-y-1">
-                <label className="font-semibold text-slate-700 dark:text-slate-300">Official Verification URL</label>
+                <label className="font-semibold text-slate-700 dark:text-slate-300">
+                  Official Verification URL (Leave empty if none exists — never invent URLs)
+                </label>
                 <input
                   type="text"
                   value={editingCert.verificationUrl || ''}
                   onChange={(e) => setEditingCert({ ...editingCert, verificationUrl: e.target.value })}
-                  placeholder="https://coursera.org/verify/..."
+                  placeholder="Only enter genuine verified URL. Leave blank if not available."
                   className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                 />
               </div>
@@ -355,25 +399,25 @@ export const AdminCertificates: React.FC<AdminCertificatesProps> = ({ certificat
                   id="edit-cert-featured"
                   checked={Boolean(editingCert.featured)}
                   onChange={(e) => setEditingCert({ ...editingCert, featured: e.target.checked })}
-                  className="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4 cursor-pointer"
+                  className="rounded text-cyan-600 focus:ring-cyan-500 w-4 h-4 cursor-pointer"
                 />
                 <label htmlFor="edit-cert-featured" className="font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
-                  Feature in Core Credentials
+                  Feature this certificate prominently
                 </label>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setEditingCert(null)}
-                  className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold"
+                  className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-200 dark:hover:bg-slate-700"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold flex items-center gap-1.5"
+                  className="px-5 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold flex items-center gap-1.5 shadow-md shadow-cyan-600/20 disabled:opacity-50"
                 >
                   <Check className="w-4 h-4" />
                   <span>{loading ? 'Saving...' : 'Save Certificate'}</span>

@@ -44,14 +44,14 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects, onSe
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0b0f19] border border-slate-700/80 text-slate-300 text-xs font-mono uppercase tracking-[0.2em] font-semibold">
-            <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 text-xs font-mono uppercase tracking-[0.2em] font-semibold shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-cyan-500 dark:bg-cyan-400"></span>
             <span>Featured Projects</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Engineering Projects &amp; Architecture
           </h2>
-          <p className="text-base sm:text-lg text-slate-300 font-normal">
+          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 font-normal">
             From complete MERN stack platforms to high-performance C++ data structures, robust Java OOP architectures, and normalized SQL engines.
           </p>
         </div>
@@ -71,7 +71,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects, onSe
                   className={`px-4 py-2 text-xs font-mono uppercase tracking-wider rounded-md whitespace-nowrap transition-all ${
                     isSelected
                       ? 'bg-cyan-500 text-slate-950 font-bold shadow-lg shadow-cyan-500/25'
-                      : 'bg-[#0b0f19] text-slate-300 hover:text-white border border-slate-700 hover:border-cyan-400 font-medium'
+                      : 'bg-white dark:bg-[#0b0f19] text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white border border-slate-200 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 font-medium shadow-sm'
                   }`}
                 >
                   {cat}
@@ -88,7 +88,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects, onSe
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search projects (React, Java, C++)..."
-              className="w-full pl-9 pr-3 py-2 text-xs rounded-md bg-[#060810] border border-slate-700 text-white placeholder:text-slate-400 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 transition-all"
+              className="w-full pl-9 pr-3 py-2 text-xs rounded-md bg-white dark:bg-[#060810] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-400/30 transition-all shadow-sm"
             />
           </div>
 
@@ -100,22 +100,22 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects, onSe
             <div
               key={project.id}
               id={`project-card-${project.id}`}
-              className="group bg-[#0b0f19] border border-slate-700/80 rounded-2xl overflow-hidden hover:border-cyan-500/50 shadow-sm transition-all flex flex-col justify-between"
+              className="group bg-white dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-700/80 rounded-2xl overflow-hidden hover:border-cyan-500/50 shadow-sm transition-all flex flex-col justify-between"
             >
               <div>
                 {/* Image Container */}
-                <div className="relative h-48 w-full overflow-hidden bg-[#060810] border-b border-slate-800">
+                <div className="relative h-48 w-full overflow-hidden bg-slate-100 dark:bg-[#060810] border-b border-slate-200 dark:border-slate-800">
                   <img
                     src={project.imageUrl}
                     alt={project.title}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300 opacity-90 group-hover:opacity-100"
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300 opacity-95 group-hover:opacity-100"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-cyan-950/40 via-black/30 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-cyan-950/20 via-black/20 to-transparent" />
                   
                   {/* Category Pill */}
                   <div className="absolute top-3 left-3">
-                    <span className="px-2.5 py-0.5 rounded bg-[#04060a]/80 backdrop-blur-md border border-slate-700 text-slate-200 font-mono text-[10px] uppercase tracking-wider font-semibold">
+                    <span className="px-2.5 py-0.5 rounded bg-slate-900/80 dark:bg-[#04060a]/80 backdrop-blur-md border border-slate-700 text-white font-mono text-[10px] uppercase tracking-wider font-semibold">
                       {project.category}
                     </span>
                   </div>
@@ -123,12 +123,12 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects, onSe
                   {/* Views & Featured */}
                   <div className="absolute top-3 right-3 flex items-center gap-1.5">
                     {project.featured && (
-                      <span className="px-2 py-0.5 rounded bg-cyan-500/25 text-cyan-300 border border-cyan-500/40 font-mono text-[10px] flex items-center gap-1 font-bold">
+                      <span className="px-2 py-0.5 rounded bg-cyan-500/90 text-slate-950 border border-cyan-400 font-mono text-[10px] flex items-center gap-1 font-bold shadow-sm">
                         <Sparkles className="w-3 h-3" /> Featured
                       </span>
                     )}
                     {project.views !== undefined && (
-                      <span className="px-2 py-0.5 rounded bg-[#04060a]/80 backdrop-blur-md text-slate-200 font-mono text-[10px] flex items-center gap-1 border border-slate-700 font-medium">
+                      <span className="px-2 py-0.5 rounded bg-slate-900/80 dark:bg-[#04060a]/80 backdrop-blur-md text-white font-mono text-[10px] flex items-center gap-1 border border-slate-700 font-medium">
                         <Eye className="w-3 h-3" /> {project.views}
                       </span>
                     )}
@@ -137,10 +137,10 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects, onSe
 
                 {/* Card Content */}
                 <div className="p-6 space-y-3">
-                  <h3 className="font-bold text-lg text-white group-hover:text-cyan-300 transition-colors">
+                  <h3 className="font-bold text-lg text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-300 transition-colors">
                     {project.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-300 line-clamp-3 leading-relaxed font-normal">
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed font-normal">
                     {project.description}
                   </p>
 
@@ -149,13 +149,13 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects, onSe
                     {project.technologies.slice(0, 4).map((tech) => (
                       <span
                         key={tech}
-                        className="px-2 py-0.5 rounded bg-[#060810] border border-slate-700 text-slate-300 font-mono text-[10px] font-medium"
+                        className="px-2 py-0.5 rounded bg-slate-100 dark:bg-[#060810] border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-mono text-[10px] font-medium"
                       >
                         {tech}
                       </span>
                     ))}
                     {project.technologies.length > 4 && (
-                      <span className="px-2 py-0.5 rounded bg-[#060810] border border-slate-700 text-slate-400 font-mono text-[10px]">
+                      <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-[#060810] border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-mono text-[10px]">
                         +{project.technologies.length - 4}
                       </span>
                     )}
@@ -164,11 +164,11 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects, onSe
               </div>
 
               {/* Card Footer Actions */}
-              <div className="p-6 pt-0 border-t border-slate-800 mt-4 flex items-center justify-between">
+              <div className="p-6 pt-0 border-t border-slate-100 dark:border-slate-800 mt-4 flex items-center justify-between">
                 <button
                   onClick={() => onSelectProject(project)}
                   id={`btn-view-project-${project.id}`}
-                  className="text-xs font-mono uppercase tracking-wider text-cyan-400 hover:text-cyan-300 flex items-center gap-1 group/btn font-bold"
+                  className="text-xs font-mono uppercase tracking-wider text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 flex items-center gap-1 group/btn font-bold"
                 >
                   <span>Architecture &amp; Docs</span>
                   <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
@@ -181,7 +181,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects, onSe
                       target="_blank"
                       rel="noreferrer"
                       id={`link-github-${project.id}`}
-                      className="p-2 rounded-md bg-[#060810] border border-slate-700 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 transition-colors"
+                      className="p-2 rounded-md bg-white dark:bg-[#060810] border border-slate-200 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-300 transition-colors shadow-sm"
                       title="View GitHub Repository"
                       aria-label="GitHub Repo"
                     >
@@ -194,7 +194,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects, onSe
                       target="_blank"
                       rel="noreferrer"
                       id={`link-demo-${project.id}`}
-                      className="p-2 rounded-md bg-cyan-500/15 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/25 transition-colors"
+                      className="p-2 rounded-md bg-cyan-500/15 border border-cyan-500/40 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-500/25 transition-colors"
                       title="Live Demo"
                       aria-label="Live Demo"
                     >

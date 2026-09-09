@@ -16,6 +16,9 @@ async function startServer() {
   app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
+  // Serve static public assets (photos, resumes, etc.)
+  app.use(express.static(path.join(process.cwd(), 'public')));
+
   // API Health check
   app.get('/api/health', (_req, res) => {
     res.json({

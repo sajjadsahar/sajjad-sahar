@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Search, X, FolderGit2, Award, Wrench, BookOpen, ArrowRight, ExternalLink } from 'lucide-react';
+import { Search, X, FolderGit2, Award, Wrench, BookOpen, ArrowRight } from 'lucide-react';
 import { Project, Certificate, Skill, Blog } from '../types.js';
 
 interface GlobalSearchModalProps {
@@ -51,8 +51,10 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       certificates: (certificates || []).filter(c => 
         (c.title || '').toLowerCase().includes(q) || 
         (c.issuingOrganization || '').toLowerCase().includes(q) ||
+        (c.certificateId || '').toLowerCase().includes(q) ||
+        (c.category || '').toLowerCase().includes(q) ||
         (c.skillsCovered || []).some(s => (s || '').toLowerCase().includes(q))
-      ).slice(0, 4),
+      ).slice(0, 6),
       skills: (skills || []).filter(s => 
         (s.name || '').toLowerCase().includes(q) || 
         (s.category || '').toLowerCase().includes(q)
@@ -71,17 +73,17 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
   return (
     <div 
       id="global-search-backdrop"
-      className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div 
         id="global-search-modal"
-        className="w-full max-w-2xl bg-[#0c0c0c] border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150"
+        className="w-full max-w-2xl bg-[#0b0f19] border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input Bar */}
-        <div className="flex items-center px-4 py-3.5 border-b border-white/10">
-          <Search className="w-5 h-5 text-gray-500 mr-3 shrink-0" />
+        <div className="flex items-center px-4 py-3.5 border-b border-slate-800 bg-[#080c14]">
+          <Search className="w-5 h-5 text-cyan-400 mr-3 shrink-0" />
           <input
             id="search-input-field"
             type="text"
@@ -89,17 +91,17 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search projects, certificates, skills, blogs... (e.g. MERN, Java, Meta, React)"
-            className="w-full bg-transparent text-white placeholder-gray-500 focus:outline-none text-base"
+            className="w-full bg-transparent text-white placeholder-slate-400 focus:outline-none text-base"
           />
           {query && (
             <button 
               onClick={() => setQuery('')}
-              className="p-1 text-gray-500 hover:text-white mr-1"
+              className="p-1 text-slate-400 hover:text-white mr-1"
             >
               <X className="w-4 h-4" />
             </button>
           )}
-          <kbd className="hidden sm:inline-block px-2 py-0.5 text-xs font-mono bg-white/[0.03] text-gray-400 rounded border border-white/10">
+          <kbd className="hidden sm:inline-block px-2 py-0.5 text-xs font-mono bg-[#0b0f19] text-slate-300 rounded border border-slate-700">
             ESC
           </kbd>
         </div>
@@ -107,14 +109,14 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         {/* Results Container */}
         <div className="max-h-[60vh] overflow-y-auto p-4 space-y-4">
           {!query && (
-            <div className="py-8 text-center text-gray-500 text-sm">
+            <div className="py-8 text-center text-slate-300 text-sm">
               <p>Type to search across Sajjad Sahar's portfolio.</p>
               <div className="flex flex-wrap items-center justify-center gap-2 mt-3">
                 {['MERN', 'Java OOP', 'C++', 'Meta Certificate', 'MongoDB', 'AI / ML'].map((tag) => (
                   <button
                     key={tag}
                     onClick={() => setQuery(tag)}
-                    className="px-2.5 py-1 text-xs font-mono rounded bg-white/[0.03] hover:border-cyan-500/30 text-gray-400 hover:text-cyan-400 border border-white/10 transition-colors"
+                    className="px-2.5 py-1 text-xs font-mono rounded-lg bg-[#060810] hover:border-cyan-500/50 text-slate-300 hover:text-cyan-300 border border-slate-700 transition-colors"
                   >
                     {tag}
                   </button>
@@ -124,16 +126,16 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           )}
 
           {query && totalResults === 0 && (
-            <div className="py-10 text-center text-gray-500 font-mono">
-              <p className="text-sm">No results matching &ldquo;{query}&rdquo;</p>
-              <p className="text-xs text-gray-600 mt-1">Try searching for &quot;React&quot;, &quot;Java&quot;, &quot;Certificate&quot;, or &quot;SQL&quot;</p>
+            <div className="py-10 text-center text-slate-300 font-mono">
+              <p className="text-sm font-semibold">No results matching &ldquo;{query}&rdquo;</p>
+              <p className="text-xs text-slate-400 mt-1">Try searching for &quot;React&quot;, &quot;Java&quot;, &quot;Certificate&quot;, or &quot;SQL&quot;</p>
             </div>
           )}
 
           {/* Projects results */}
           {filtered.projects.length > 0 && (
             <div>
-              <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 uppercase tracking-wider mb-2">
+              <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 uppercase tracking-wider mb-2 font-semibold">
                 <FolderGit2 className="w-3.5 h-3.5" />
                 <span>Projects ({filtered.projects.length})</span>
               </div>
@@ -145,17 +147,17 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                       onSelectProject(p);
                       onClose();
                     }}
-                    className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 cursor-pointer group transition-colors"
+                    className="flex items-center justify-between p-3 rounded-xl bg-[#060810] hover:bg-[#0f172a] border border-slate-800 hover:border-cyan-500/50 cursor-pointer group transition-colors"
                   >
                     <div>
-                      <div className="font-medium text-sm text-white group-hover:text-cyan-400 transition-colors">
+                      <div className="font-semibold text-sm text-white group-hover:text-cyan-300 transition-colors">
                         {p.title}
                       </div>
-                      <div className="text-xs text-gray-400 line-clamp-1">
+                      <div className="text-xs text-slate-300 line-clamp-1 mt-0.5">
                         {p.description}
                       </div>
                     </div>
-                    <span className="text-xs px-2 py-0.5 rounded bg-black/40 text-cyan-400 border border-white/5 font-mono shrink-0 ml-2">
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 font-mono shrink-0 ml-2 font-semibold">
                       {p.category}
                     </span>
                   </div>
@@ -167,7 +169,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           {/* Certificates results */}
           {filtered.certificates.length > 0 && (
             <div>
-              <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 uppercase tracking-wider mb-2">
+              <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 uppercase tracking-wider mb-2 font-semibold">
                 <Award className="w-3.5 h-3.5" />
                 <span>Certificates ({filtered.certificates.length})</span>
               </div>
@@ -179,17 +181,17 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                       onSelectCertificate(c);
                       onClose();
                     }}
-                    className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 cursor-pointer group transition-colors"
+                    className="flex items-center justify-between p-3 rounded-xl bg-[#060810] hover:bg-[#0f172a] border border-slate-800 hover:border-cyan-500/50 cursor-pointer group transition-colors"
                   >
                     <div>
-                      <div className="font-medium text-sm text-white group-hover:text-cyan-400 transition-colors">
+                      <div className="font-semibold text-sm text-white group-hover:text-cyan-300 transition-colors">
                         {c.title}
                       </div>
-                      <div className="text-xs text-gray-400 font-mono">
+                      <div className="text-xs text-slate-300 font-mono mt-0.5">
                         {c.issuingOrganization} • ID: {c.certificateId}
                       </div>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-cyan-400 group-hover:translate-x-1 transition-transform shrink-0" />
+                    <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-cyan-300 group-hover:translate-x-1 transition-transform shrink-0" />
                   </div>
                 ))}
               </div>
@@ -199,7 +201,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           {/* Skills results */}
           {filtered.skills.length > 0 && (
             <div>
-              <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 uppercase tracking-wider mb-2">
+              <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 uppercase tracking-wider mb-2 font-semibold">
                 <Wrench className="w-3.5 h-3.5" />
                 <span>Skills ({filtered.skills.length})</span>
               </div>
@@ -207,10 +209,10 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                 {filtered.skills.map((s) => (
                   <div
                     key={s.id}
-                    className="p-2 rounded-lg bg-black/40 border border-white/5 text-xs flex items-center justify-between font-mono"
+                    className="p-2.5 rounded-lg bg-[#060810] border border-slate-700/80 text-xs flex items-center justify-between font-mono"
                   >
-                    <span className="font-medium text-gray-300">{s.name}</span>
-                    <span className="text-[10px] text-cyan-400">{s.proficiency}</span>
+                    <span className="font-medium text-slate-200">{s.name}</span>
+                    <span className="text-[10px] text-cyan-300 font-bold">{s.proficiency}</span>
                   </div>
                 ))}
               </div>
@@ -220,7 +222,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           {/* Blogs results */}
           {filtered.blogs.length > 0 && (
             <div>
-              <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 uppercase tracking-wider mb-2">
+              <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 uppercase tracking-wider mb-2 font-semibold">
                 <BookOpen className="w-3.5 h-3.5" />
                 <span>Blogs ({filtered.blogs.length})</span>
               </div>
@@ -232,12 +234,12 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                       onSelectBlog(b);
                       onClose();
                     }}
-                    className="p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 cursor-pointer group transition-colors"
+                    className="p-3 rounded-xl bg-[#060810] hover:bg-[#0f172a] border border-slate-800 hover:border-cyan-500/50 cursor-pointer group transition-colors"
                   >
-                    <div className="font-medium text-sm text-white group-hover:text-cyan-400 transition-colors">
+                    <div className="font-semibold text-sm text-white group-hover:text-cyan-300 transition-colors">
                       {b.title}
                     </div>
-                    <div className="text-xs text-gray-400 line-clamp-1 mt-0.5">
+                    <div className="text-xs text-slate-300 line-clamp-1 mt-0.5">
                       {b.excerpt}
                     </div>
                   </div>
@@ -248,9 +250,9 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         </div>
 
         {/* Footer info */}
-        <div className="px-4 py-2.5 bg-black/40 border-t border-white/5 text-xs font-mono text-gray-500 flex items-center justify-between">
-          <span>Press <kbd className="font-mono">ESC</kbd> to exit</span>
-          <span className="text-cyan-400">{totalResults} items found</span>
+        <div className="px-4 py-3 bg-[#080c14] border-t border-slate-800 text-xs font-mono text-slate-400 flex items-center justify-between">
+          <span>Press <kbd className="font-mono text-slate-300 bg-slate-800 px-1.5 py-0.5 rounded">ESC</kbd> to exit</span>
+          <span className="text-cyan-400 font-semibold">{totalResults} items found</span>
         </div>
       </div>
     </div>

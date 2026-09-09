@@ -7,10 +7,12 @@ import {
   Save, 
   GraduationCap, 
   Globe, 
-  FileText 
+  FileText,
+  ExternalLink 
 } from 'lucide-react';
 import { Profile } from '../../types.js';
 import { updateProfile, enhanceAIText } from '../../services/api.js';
+import { DEFAULT_FACEBOOK_URL, DEFAULT_WHATSAPP_NUMBER, getWhatsAppLink } from '../../utils/social.js';
 
 interface AdminAboutProps {
   profile: Profile;
@@ -274,6 +276,23 @@ export const AdminAbout: React.FC<AdminAboutProps> = ({ profile, onRefresh }) =>
             </div>
 
             <div className="space-y-1">
+              <label className="font-semibold text-slate-700 dark:text-slate-300">Facebook Profile URL</label>
+              <input
+                type="text"
+                value={formData.socialLinks.facebook || ''}
+                onChange={(e) => setFormData({ 
+                  ...formData, 
+                  socialLinks: { ...formData.socialLinks, facebook: e.target.value } 
+                })}
+                placeholder={DEFAULT_FACEBOOK_URL}
+                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
+              />
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                Default: <span className="font-mono text-cyan-600 dark:text-cyan-400">{DEFAULT_FACEBOOK_URL}</span>
+              </p>
+            </div>
+
+            <div className="space-y-1">
               <label className="font-semibold text-slate-700 dark:text-slate-300">WhatsApp Contact Number</label>
               <input
                 type="text"
@@ -282,8 +301,44 @@ export const AdminAbout: React.FC<AdminAboutProps> = ({ profile, onRefresh }) =>
                   ...formData, 
                   socialLinks: { ...formData.socialLinks, whatsapp: e.target.value } 
                 })}
-                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
+                placeholder={DEFAULT_WHATSAPP_NUMBER}
+                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-mono"
               />
+              <div className="pt-1 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] text-slate-500 dark:text-slate-400">
+                <span>
+                  International Wa.me URL:{' '}
+                  <span className="font-mono text-emerald-600 dark:text-emerald-400 font-semibold">
+                    {getWhatsAppLink(formData.socialLinks.whatsapp || DEFAULT_WHATSAPP_NUMBER).split('?')[0]}
+                  </span>
+                </span>
+                <a
+                  href={getWhatsAppLink(formData.socialLinks.whatsapp || DEFAULT_WHATSAPP_NUMBER)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 hover:underline font-semibold"
+                >
+                  <span>Test Link</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            </div>
+
+            <div className="space-y-1 sm:col-span-2">
+              <label className="font-semibold text-slate-700 dark:text-slate-300">Profile Photo URL / Path</label>
+              <div className="flex items-center gap-3">
+                <img
+                  src={formData.avatarUrl || '/sajjad_photo.jpg'}
+                  alt="Profile Preview"
+                  className="w-10 h-10 rounded-lg object-cover border border-slate-200 dark:border-slate-700"
+                />
+                <input
+                  type="text"
+                  value={formData.avatarUrl || ''}
+                  onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value })}
+                  placeholder="/sajjad_photo.jpg"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-mono"
+                />
+              </div>
             </div>
 
             <div className="space-y-1 sm:col-span-2">
