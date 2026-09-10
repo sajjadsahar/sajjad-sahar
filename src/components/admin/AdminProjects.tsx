@@ -25,9 +25,11 @@ export const AdminProjects: React.FC<AdminProjectsProps> = ({ projects, onRefres
   const [loading, setLoading] = useState(false);
   const [enhancing, setEnhancing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [techInput, setTechInput] = useState<string>('');
 
   const startNewProject = () => {
     setIsNew(true);
+    setTechInput('React, Node.js, Express, MongoDB');
     setEditingProject({
       title: '',
       category: 'Web',
@@ -45,10 +47,16 @@ export const AdminProjects: React.FC<AdminProjectsProps> = ({ projects, onRefres
 
   const startEditProject = (p: Project) => {
     setIsNew(false);
-    setEditingProject({ ...p });
+    const docId = p._id || p.id;
+    setTechInput(Array.isArray(p.technologies) ? p.technologies.join(', ') : (p.technologies || ''));
+    setEditingProject({ ...p, id: docId, _id: docId });
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id?: string) => {
+    if (!id) {
+      alert('Cannot delete: Project ID is missing.');
+      return;
+    }
     if (!window.confirm('Are you sure you want to delete this project?')) return;
     try {
       await deleteProject(id);
@@ -68,10 +76,22 @@ export const AdminProjects: React.FC<AdminProjectsProps> = ({ projects, onRefres
     setLoading(true);
     setError(null);
     try {
+      const parsedTechnologies = techInput
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean);
+      const projectPayload = {
+        ...editingProject,
+        technologies: parsedTechnologies
+      };
+
+      const targetId = editingProject._id || editingProject.id;
       if (isNew) {
-        await createProject(editingProject);
-      } else if (editingProject.id) {
-        await updateProject(editingProject.id, editingProject);
+        await createProject(projectPayload);
+      } else if (targetId) {
+        await updateProject(targetId, { ...projectPayload, id: targetId, _id: targetId });
+      } else {
+        throw new Error('Project ID is missing for update operation.');
       }
       setEditingProject(null);
       onRefresh();
@@ -132,8 +152,10 @@ export const AdminProjects: React.FC<AdminProjectsProps> = ({ projects, onRefres
       {/* Projects List Table */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
         <div className="divide-y divide-slate-100 dark:divide-slate-800">
-          {projects.map((p) => (
-            <div key={p.id} className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
+          {projects.map((p) => {
+            const itemDocId = p._id || p.id;
+            return (
+            <div key={itemDocId} className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
               <div className="flex items-center gap-4">
                 <img
                   src={p.imageUrl}
@@ -168,21 +190,22 @@ export const AdminProjects: React.FC<AdminProjectsProps> = ({ projects, onRefres
               <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
                 <button
                   onClick={() => startEditProject(p)}
-                  className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors"
+                  className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer"
                   title="Edit Project"
                 >
                   <Edit3 className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => handleDelete(p.id)}
-                  className="p-2 rounded-lg bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/60 text-red-600 dark:text-red-400 transition-colors"
+                  onClick={() => handleDelete(itemDocId)}
+                  className="p-2 rounded-lg bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/60 text-red-600 dark:text-red-400 transition-colors cursor-pointer"
                   title="Delete Project"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -270,11 +293,8 @@ export const AdminProjects: React.FC<AdminProjectsProps> = ({ projects, onRefres
                 <label className="font-semibold text-slate-700 dark:text-slate-300">Technologies (comma separated)</label>
                 <input
                   type="text"
-                  value={Array.isArray(editingProject.technologies) ? editingProject.technologies.join(', ') : ''}
-                  onChange={(e) => setEditingProject({ 
-                    ...editingProject, 
-                    technologies: e.target.value.split(',').map(s => s.trim()).filter(Boolean) 
-                  })}
+                  value={techInput}
+                  onChange={(e) => setTechInput(e.target.value)}
                   placeholder="React, Node.js, Express, MongoDB"
                   className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                 />

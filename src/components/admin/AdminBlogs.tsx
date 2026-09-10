@@ -44,10 +44,15 @@ export const AdminBlogs: React.FC<AdminBlogsProps> = ({ blogs, onRefresh }) => {
 
   const startEdit = (b: Blog) => {
     setIsNew(false);
-    setEditingBlog({ ...b });
+    const docId = b._id || b.id;
+    setEditingBlog({ ...b, id: docId, _id: docId });
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id?: string) => {
+    if (!id) {
+      alert('Cannot delete: Blog ID is missing.');
+      return;
+    }
     if (!window.confirm('Delete this article?')) return;
     try {
       await deleteBlog(id);
@@ -67,10 +72,13 @@ export const AdminBlogs: React.FC<AdminBlogsProps> = ({ blogs, onRefresh }) => {
     setLoading(true);
     setError(null);
     try {
+      const targetId = editingBlog._id || editingBlog.id;
       if (isNew) {
         await createBlog(editingBlog);
-      } else if (editingBlog.id) {
-        await updateBlog(editingBlog.id, editingBlog);
+      } else if (targetId) {
+        await updateBlog(targetId, { ...editingBlog, id: targetId, _id: targetId });
+      } else {
+        throw new Error('Blog ID is missing for update operation.');
       }
       setEditingBlog(null);
       onRefresh();
@@ -127,8 +135,10 @@ export const AdminBlogs: React.FC<AdminBlogsProps> = ({ blogs, onRefresh }) => {
       </div>
 
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm divide-y divide-slate-100 dark:divide-slate-800">
-        {blogs.map((b) => (
-          <div key={b.id} className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {blogs.map((b) => {
+          const itemDocId = b._id || b.id;
+          return (
+          <div key={itemDocId} className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <img
                 src={b.coverImage || "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80"}
@@ -160,19 +170,20 @@ export const AdminBlogs: React.FC<AdminBlogsProps> = ({ blogs, onRefresh }) => {
             <div className="flex items-center gap-2 self-end sm:self-center">
               <button
                 onClick={() => startEdit(b)}
-                className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200"
+                className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 cursor-pointer"
               >
                 <Edit3 className="w-3.5 h-3.5" />
               </button>
               <button
-                onClick={() => handleDelete(b.id)}
-                className="p-2 rounded-lg bg-red-50 dark:bg-red-950/40 text-red-600 hover:bg-red-100"
+                onClick={() => handleDelete(itemDocId)}
+                className="p-2 rounded-lg bg-red-50 dark:bg-red-950/40 text-red-600 hover:bg-red-100 cursor-pointer"
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       {editingBlog && (

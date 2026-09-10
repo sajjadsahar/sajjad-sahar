@@ -65,7 +65,11 @@ export function createBlog(req: AuthRequest, res: Response) {
 
 export function updateBlog(req: AuthRequest, res: Response) {
   try {
-    const updated = db.updateBlog(req.params.id, req.body);
+    const targetId = req.params.id || req.body?._id || req.body?.id;
+    if (!targetId || targetId === 'undefined') {
+      return res.status(400).json({ error: 'Valid blog ID is required for update' });
+    }
+    const updated = db.updateBlog(targetId, req.body);
     if (!updated) {
       return res.status(404).json({ error: 'Blog not found' });
     }
@@ -76,9 +80,17 @@ export function updateBlog(req: AuthRequest, res: Response) {
 }
 
 export function deleteBlog(req: AuthRequest, res: Response) {
-  const deleted = db.deleteBlog(req.params.id);
-  if (!deleted) {
-    return res.status(404).json({ error: 'Blog not found' });
+  try {
+    const targetId = req.params.id || req.body?._id || req.body?.id;
+    if (!targetId || targetId === 'undefined') {
+      return res.status(400).json({ error: 'Valid blog ID is required for deletion' });
+    }
+    const deleted = db.deleteBlog(targetId);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Blog not found' });
+    }
+    return res.json({ success: true, message: 'Blog deleted successfully' });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message || 'Failed to delete blog' });
   }
-  return res.json({ success: true, message: 'Blog deleted successfully' });
 }

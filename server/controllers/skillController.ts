@@ -34,7 +34,11 @@ export function createSkill(req: AuthRequest, res: Response) {
 
 export function updateSkill(req: AuthRequest, res: Response) {
   try {
-    const updated = db.updateSkill(req.params.id, req.body);
+    const targetId = req.params.id || req.body?._id || req.body?.id;
+    if (!targetId || targetId === 'undefined') {
+      return res.status(400).json({ error: 'Valid skill ID is required for update' });
+    }
+    const updated = db.updateSkill(targetId, req.body);
     if (!updated) {
       return res.status(404).json({ error: 'Skill not found' });
     }
@@ -45,9 +49,17 @@ export function updateSkill(req: AuthRequest, res: Response) {
 }
 
 export function deleteSkill(req: AuthRequest, res: Response) {
-  const deleted = db.deleteSkill(req.params.id);
-  if (!deleted) {
-    return res.status(404).json({ error: 'Skill not found' });
+  try {
+    const targetId = req.params.id || req.body?._id || req.body?.id;
+    if (!targetId || targetId === 'undefined') {
+      return res.status(400).json({ error: 'Valid skill ID is required for deletion' });
+    }
+    const deleted = db.deleteSkill(targetId);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Skill not found' });
+    }
+    return res.json({ success: true, message: 'Skill deleted successfully' });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message || 'Failed to delete skill' });
   }
-  return res.json({ success: true, message: 'Skill deleted successfully' });
 }

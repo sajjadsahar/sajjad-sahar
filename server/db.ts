@@ -502,7 +502,16 @@ When you understand how nodes link together in memory, you write significantly f
   };
 };
 
-class Database {
+function normalizeDoc<T extends Record<string, any>>(doc: T, idPrefix: string = 'item'): T {
+  const finalId = String(doc.id || doc._id || `${idPrefix}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`).trim();
+  return {
+    ...doc,
+    id: finalId,
+    _id: finalId
+  };
+}
+
+export class Database {
   private data: DatabaseSchema;
 
   constructor() {
@@ -516,17 +525,36 @@ class Database {
     }
   }
 
+  private normalizeSchema(parsed: any): DatabaseSchema {
+    const initial = getInitialData();
+    const data: DatabaseSchema = {
+      admin: parsed?.admin || initial.admin,
+      profile: parsed?.profile || initial.profile,
+      projects: Array.isArray(parsed?.projects) ? parsed.projects.map((p: any) => normalizeDoc(p, 'proj')) : initial.projects.map(p => normalizeDoc(p, 'proj')),
+      certificates: Array.isArray(parsed?.certificates) ? parsed.certificates.map((c: any) => normalizeDoc(c, 'cert')) : initial.certificates.map(c => normalizeDoc(c, 'cert')),
+      skills: Array.isArray(parsed?.skills) ? parsed.skills.map((s: any) => normalizeDoc(s, 'sk')) : initial.skills.map(s => normalizeDoc(s, 'sk')),
+      experience: Array.isArray(parsed?.experience) ? parsed.experience.map((e: any) => normalizeDoc(e, 'exp')) : initial.experience.map(e => normalizeDoc(e, 'exp')),
+      achievements: Array.isArray(parsed?.achievements) ? parsed.achievements.map((a: any) => normalizeDoc(a, 'ach')) : initial.achievements.map(a => normalizeDoc(a, 'ach')),
+      blogs: Array.isArray(parsed?.blogs) ? parsed.blogs.map((b: any) => normalizeDoc(b, 'blog')) : initial.blogs.map(b => normalizeDoc(b, 'blog')),
+      messages: Array.isArray(parsed?.messages) ? parsed.messages.map((m: any) => normalizeDoc(m, 'msg')) : initial.messages.map(m => normalizeDoc(m, 'msg')),
+      analytics: parsed?.analytics || initial.analytics
+    };
+    return data;
+  }
+
   private loadData(): DatabaseSchema {
     try {
       if (fs.existsSync(DATA_FILE)) {
         const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
         const parsed = JSON.parse(fileContent);
-        return parsed;
+        const normalized = this.normalizeSchema(parsed);
+        this.saveDataDirect(normalized);
+        return normalized;
       }
     } catch (err) {
       console.warn('Could not read existing database file, initializing default seed data:', err);
     }
-    const initial = getInitialData();
+    const initial = this.normalizeSchema(getInitialData());
     this.saveDataDirect(initial);
     return initial;
   }
@@ -547,23 +575,39 @@ class Database {
   // Getters
   public getAdmin() { return this.data.admin; }
   public getProfile() { return this.data.profile; }
-  public getProjects() { return this.data.projects; }
-  public getCertificates() { return this.data.certificates; }
-  public getSkills() { return this.data.skills; }
-  public getExperience() { return this.data.experience; }
-  public getAchievements() { return this.data.achievements; }
-  public getBlogs() { return this.data.blogs; }
-  public getMessages() { return this.data.messages; }
+  public getProjects() { return this.data.projects.map(p => normalizeDoc(p, 'proj')); }
+  public getCertificates(): Certificate[] { 
+    return this.data.certificates.map(c => {
+      const docUrl = c.certificateDocument?.url || c.fileUrl || '';
+      const docType = c.certificateDocument?.fileType || c.fileType || (docUrl.toLowerCase().includes('.pdf') ? 'pdf' : 'image');
+      const normalized = normalizeDoc(c, 'cert');
+      return {
+        ...normalized,
+        fileUrl: docUrl,
+        fileType: docType as 'image' | 'pdf',
+        certificateDocument: normalized.certificateDocument || {
+          url: docUrl,
+          publicId: '',
+          fileType: docType
+        }
+      };
+    });
+  }
+  public getSkills() { return this.data.skills.map(s => normalizeDoc(s, 'sk')); }
+  public getExperience() { return this.data.experience.map(e => normalizeDoc(e, 'exp')); }
+  public getAchievements() { return this.data.achievements.map(a => normalizeDoc(a, 'ach')); }
+  public getBlogs() { return this.data.blogs.map(b => normalizeDoc(b, 'blog')); }
+  public getMessages() { return this.data.messages.map(m => normalizeDoc(m, 'msg')); }
   public getAnalytics() { return this.data.analytics; }
   public getPortfolioData() {
     return {
       profile: this.data.profile,
-      projects: this.data.projects,
-      certificates: this.data.certificates,
-      skills: this.data.skills,
-      experience: this.data.experience,
-      achievements: this.data.achievements,
-      blogs: this.data.blogs
+      projects: this.getProjects(),
+      certificates: this.getCertificates(),
+      skills: this.getSkills(),
+      experience: this.getExperience(),
+      achievements: this.getAchievements(),
+      blogs: this.getBlogs()
     };
   }
 
@@ -580,10 +624,12 @@ class Database {
   }
 
   // Projects CRUD
-  public addProject(project: Omit<Project, 'id'>): Project {
+  public addProject(project: Omit<Project, 'id' | '_id'>): Project {
+    const newId = `proj-${Date.now()}`;
     const newProject: Project = {
       ...project,
-      id: `proj-${Date.now()}`,
+      id: newId,
+      _id: newId,
       views: 0
     };
     this.data.projects.unshift(newProject);
@@ -592,23 +638,35 @@ class Database {
   }
 
   public updateProject(id: string, updates: Partial<Project>): Project | null {
-    const index = this.data.projects.findIndex(p => p.id === id);
+    const cleanId = String(id || '').trim();
+    if (!cleanId || cleanId === 'undefined') return null;
+    const index = this.data.projects.findIndex(p => p.id === cleanId || p._id === cleanId);
     if (index === -1) return null;
-    this.data.projects[index] = { ...this.data.projects[index], ...updates };
+    const existing = this.data.projects[index];
+    const finalId = existing.id || existing._id || cleanId;
+    this.data.projects[index] = { 
+      ...existing, 
+      ...updates, 
+      id: finalId, 
+      _id: finalId 
+    };
     this.save();
     return this.data.projects[index];
   }
 
   public deleteProject(id: string): boolean {
+    const cleanId = String(id || '').trim();
+    if (!cleanId || cleanId === 'undefined') return false;
     const initialLength = this.data.projects.length;
-    this.data.projects = this.data.projects.filter(p => p.id !== id);
+    this.data.projects = this.data.projects.filter(p => p.id !== cleanId && p._id !== cleanId);
     const deleted = this.data.projects.length < initialLength;
     if (deleted) this.save();
     return deleted;
   }
 
   public incrementProjectViews(id: string) {
-    const p = this.data.projects.find(p => p.id === id);
+    const cleanId = String(id || '').trim();
+    const p = this.data.projects.find(p => p.id === cleanId || p._id === cleanId);
     if (p) {
       p.views = (p.views || 0) + 1;
       this.data.analytics.projectViews = (this.data.analytics.projectViews || 0) + 1;
@@ -617,10 +675,21 @@ class Database {
   }
 
   // Certificates CRUD
-  public addCertificate(cert: Omit<Certificate, 'id'>): Certificate {
+  public addCertificate(cert: Omit<Certificate, 'id' | '_id'>): Certificate {
+    const docUrl = cert.certificateDocument?.url || cert.fileUrl || '';
+    const docType = (cert.certificateDocument?.fileType || cert.fileType || (docUrl.toLowerCase().includes('.pdf') ? 'pdf' : 'image')) as 'image' | 'pdf';
+    const newId = `cert-${Date.now()}`;
     const newCert: Certificate = {
       ...cert,
-      id: `cert-${Date.now()}`,
+      id: newId,
+      _id: newId,
+      fileUrl: docUrl,
+      fileType: docType,
+      certificateDocument: cert.certificateDocument || {
+        url: docUrl,
+        publicId: '',
+        fileType: docType
+      },
       views: 0
     };
     this.data.certificates.unshift(newCert);
@@ -629,23 +698,45 @@ class Database {
   }
 
   public updateCertificate(id: string, updates: Partial<Certificate>): Certificate | null {
-    const index = this.data.certificates.findIndex(c => c.id === id);
+    const cleanId = String(id || '').trim();
+    if (!cleanId || cleanId === 'undefined') return null;
+    const index = this.data.certificates.findIndex(c => c.id === cleanId || c._id === cleanId);
     if (index === -1) return null;
-    this.data.certificates[index] = { ...this.data.certificates[index], ...updates };
+    const existing = this.data.certificates[index];
+    const finalId = existing.id || existing._id || cleanId;
+    const docUrl = updates.certificateDocument?.url || updates.fileUrl || existing.certificateDocument?.url || existing.fileUrl || '';
+    const docType = (updates.certificateDocument?.fileType || updates.fileType || existing.certificateDocument?.fileType || existing.fileType || (docUrl.toLowerCase().includes('.pdf') ? 'pdf' : 'image')) as 'image' | 'pdf';
+
+    const mergedCertDocument = updates.certificateDocument
+      ? { ...(existing.certificateDocument || {}), ...updates.certificateDocument, url: docUrl, fileType: docType }
+      : (existing.certificateDocument ? { ...existing.certificateDocument, url: docUrl, fileType: docType } : { url: docUrl, publicId: '', fileType: docType });
+
+    this.data.certificates[index] = { 
+      ...existing, 
+      ...updates,
+      id: finalId,
+      _id: finalId,
+      fileUrl: docUrl,
+      fileType: docType,
+      certificateDocument: mergedCertDocument
+    };
     this.save();
     return this.data.certificates[index];
   }
 
   public deleteCertificate(id: string): boolean {
+    const cleanId = String(id || '').trim();
+    if (!cleanId || cleanId === 'undefined') return false;
     const initialLength = this.data.certificates.length;
-    this.data.certificates = this.data.certificates.filter(c => c.id !== id);
+    this.data.certificates = this.data.certificates.filter(c => c.id !== cleanId && c._id !== cleanId);
     const deleted = this.data.certificates.length < initialLength;
     if (deleted) this.save();
     return deleted;
   }
 
   public incrementCertificateViews(id: string) {
-    const c = this.data.certificates.find(c => c.id === id);
+    const cleanId = String(id || '').trim();
+    const c = this.data.certificates.find(c => c.id === cleanId || c._id === cleanId);
     if (c) {
       c.views = (c.views || 0) + 1;
       this.data.analytics.certificateViews = (this.data.analytics.certificateViews || 0) + 1;
@@ -654,10 +745,12 @@ class Database {
   }
 
   // Skills CRUD
-  public addSkill(skill: Omit<Skill, 'id'>): Skill {
+  public addSkill(skill: Omit<Skill, 'id' | '_id'>): Skill {
+    const newId = `sk-${Date.now()}`;
     const newSkill: Skill = {
       ...skill,
-      id: `sk-${Date.now()}`
+      id: newId,
+      _id: newId
     };
     this.data.skills.push(newSkill);
     this.save();
@@ -665,26 +758,34 @@ class Database {
   }
 
   public updateSkill(id: string, updates: Partial<Skill>): Skill | null {
-    const index = this.data.skills.findIndex(s => s.id === id);
+    const cleanId = String(id || '').trim();
+    if (!cleanId || cleanId === 'undefined') return null;
+    const index = this.data.skills.findIndex(s => s.id === cleanId || s._id === cleanId);
     if (index === -1) return null;
-    this.data.skills[index] = { ...this.data.skills[index], ...updates };
+    const existing = this.data.skills[index];
+    const finalId = existing.id || existing._id || cleanId;
+    this.data.skills[index] = { ...existing, ...updates, id: finalId, _id: finalId };
     this.save();
     return this.data.skills[index];
   }
 
   public deleteSkill(id: string): boolean {
+    const cleanId = String(id || '').trim();
+    if (!cleanId || cleanId === 'undefined') return false;
     const initialLength = this.data.skills.length;
-    this.data.skills = this.data.skills.filter(s => s.id !== id);
+    this.data.skills = this.data.skills.filter(s => s.id !== cleanId && s._id !== cleanId);
     const deleted = this.data.skills.length < initialLength;
     if (deleted) this.save();
     return deleted;
   }
 
   // Experience CRUD
-  public addExperience(exp: Omit<Experience, 'id'>): Experience {
+  public addExperience(exp: Omit<Experience, 'id' | '_id'>): Experience {
+    const newId = `exp-${Date.now()}`;
     const newExp: Experience = {
       ...exp,
-      id: `exp-${Date.now()}`
+      id: newId,
+      _id: newId
     };
     this.data.experience.unshift(newExp);
     this.save();
@@ -692,26 +793,34 @@ class Database {
   }
 
   public updateExperience(id: string, updates: Partial<Experience>): Experience | null {
-    const index = this.data.experience.findIndex(e => e.id === id);
+    const cleanId = String(id || '').trim();
+    if (!cleanId || cleanId === 'undefined') return null;
+    const index = this.data.experience.findIndex(e => e.id === cleanId || e._id === cleanId);
     if (index === -1) return null;
-    this.data.experience[index] = { ...this.data.experience[index], ...updates };
+    const existing = this.data.experience[index];
+    const finalId = existing.id || existing._id || cleanId;
+    this.data.experience[index] = { ...existing, ...updates, id: finalId, _id: finalId };
     this.save();
     return this.data.experience[index];
   }
 
   public deleteExperience(id: string): boolean {
+    const cleanId = String(id || '').trim();
+    if (!cleanId || cleanId === 'undefined') return false;
     const initialLength = this.data.experience.length;
-    this.data.experience = this.data.experience.filter(e => e.id !== id);
+    this.data.experience = this.data.experience.filter(e => e.id !== cleanId && e._id !== cleanId);
     const deleted = this.data.experience.length < initialLength;
     if (deleted) this.save();
     return deleted;
   }
 
   // Achievements CRUD
-  public addAchievement(ach: Omit<Achievement, 'id'>): Achievement {
+  public addAchievement(ach: Omit<Achievement, 'id' | '_id'>): Achievement {
+    const newId = `ach-${Date.now()}`;
     const newAch: Achievement = {
       ...ach,
-      id: `ach-${Date.now()}`
+      id: newId,
+      _id: newId
     };
     this.data.achievements.unshift(newAch);
     this.save();
@@ -719,26 +828,34 @@ class Database {
   }
 
   public updateAchievement(id: string, updates: Partial<Achievement>): Achievement | null {
-    const index = this.data.achievements.findIndex(a => a.id === id);
+    const cleanId = String(id || '').trim();
+    if (!cleanId || cleanId === 'undefined') return null;
+    const index = this.data.achievements.findIndex(a => a.id === cleanId || a._id === cleanId);
     if (index === -1) return null;
-    this.data.achievements[index] = { ...this.data.achievements[index], ...updates };
+    const existing = this.data.achievements[index];
+    const finalId = existing.id || existing._id || cleanId;
+    this.data.achievements[index] = { ...existing, ...updates, id: finalId, _id: finalId };
     this.save();
     return this.data.achievements[index];
   }
 
   public deleteAchievement(id: string): boolean {
+    const cleanId = String(id || '').trim();
+    if (!cleanId || cleanId === 'undefined') return false;
     const initialLength = this.data.achievements.length;
-    this.data.achievements = this.data.achievements.filter(a => a.id !== id);
+    this.data.achievements = this.data.achievements.filter(a => a.id !== cleanId && a._id !== cleanId);
     const deleted = this.data.achievements.length < initialLength;
     if (deleted) this.save();
     return deleted;
   }
 
   // Blogs CRUD
-  public addBlog(blog: Omit<Blog, 'id'>): Blog {
+  public addBlog(blog: Omit<Blog, 'id' | '_id'>): Blog {
+    const newId = `blog-${Date.now()}`;
     const newBlog: Blog = {
       ...blog,
-      id: `blog-${Date.now()}`,
+      id: newId,
+      _id: newId,
       views: 0
     };
     this.data.blogs.unshift(newBlog);
@@ -747,23 +864,30 @@ class Database {
   }
 
   public updateBlog(id: string, updates: Partial<Blog>): Blog | null {
-    const index = this.data.blogs.findIndex(b => b.id === id);
+    const cleanId = String(id || '').trim();
+    if (!cleanId || cleanId === 'undefined') return null;
+    const index = this.data.blogs.findIndex(b => b.id === cleanId || b._id === cleanId);
     if (index === -1) return null;
-    this.data.blogs[index] = { ...this.data.blogs[index], ...updates };
+    const existing = this.data.blogs[index];
+    const finalId = existing.id || existing._id || cleanId;
+    this.data.blogs[index] = { ...existing, ...updates, id: finalId, _id: finalId };
     this.save();
     return this.data.blogs[index];
   }
 
   public deleteBlog(id: string): boolean {
+    const cleanId = String(id || '').trim();
+    if (!cleanId || cleanId === 'undefined') return false;
     const initialLength = this.data.blogs.length;
-    this.data.blogs = this.data.blogs.filter(b => b.id !== id);
+    this.data.blogs = this.data.blogs.filter(b => b.id !== cleanId && b._id !== cleanId);
     const deleted = this.data.blogs.length < initialLength;
     if (deleted) this.save();
     return deleted;
   }
 
   public incrementBlogViews(id: string) {
-    const b = this.data.blogs.find(b => b.id === id);
+    const cleanId = String(id || '').trim();
+    const b = this.data.blogs.find(b => b.id === cleanId || b._id === cleanId);
     if (b) {
       b.views = (b.views || 0) + 1;
       this.data.analytics.blogViews = (this.data.analytics.blogViews || 0) + 1;
@@ -772,10 +896,12 @@ class Database {
   }
 
   // Messages
-  public addMessage(msg: Omit<ContactMessage, 'id' | 'createdAt' | 'read' | 'replied'>): ContactMessage {
+  public addMessage(msg: Omit<ContactMessage, 'id' | '_id' | 'createdAt' | 'read' | 'replied'>): ContactMessage {
+    const newId = `msg-${Date.now()}`;
     const newMsg: ContactMessage = {
       ...msg,
-      id: `msg-${Date.now()}`,
+      id: newId,
+      _id: newId,
       createdAt: new Date().toISOString(),
       read: false,
       replied: false
@@ -787,7 +913,9 @@ class Database {
   }
 
   public markMessageRead(id: string, read: boolean = true): boolean {
-    const msg = this.data.messages.find(m => m.id === id);
+    const cleanId = String(id || '').trim();
+    if (!cleanId || cleanId === 'undefined') return false;
+    const msg = this.data.messages.find(m => m.id === cleanId || m._id === cleanId);
     if (msg) {
       msg.read = read;
       this.save();
@@ -797,8 +925,10 @@ class Database {
   }
 
   public deleteMessage(id: string): boolean {
+    const cleanId = String(id || '').trim();
+    if (!cleanId || cleanId === 'undefined') return false;
     const initialLength = this.data.messages.length;
-    this.data.messages = this.data.messages.filter(m => m.id !== id);
+    this.data.messages = this.data.messages.filter(m => m.id !== cleanId && m._id !== cleanId);
     const deleted = this.data.messages.length < initialLength;
     if (deleted) this.save();
     return deleted;

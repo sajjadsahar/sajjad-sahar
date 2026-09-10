@@ -36,10 +36,15 @@ export const AdminSkills: React.FC<AdminSkillsProps> = ({ skills, onRefresh }) =
 
   const startEditSkill = (s: Skill) => {
     setIsNew(false);
-    setEditingSkill({ ...s });
+    const docId = s._id || s.id;
+    setEditingSkill({ ...s, id: docId, _id: docId });
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id?: string) => {
+    if (!id) {
+      alert('Cannot delete: Skill ID is missing.');
+      return;
+    }
     if (!window.confirm('Delete this skill?')) return;
     try {
       await deleteSkill(id);
@@ -59,10 +64,13 @@ export const AdminSkills: React.FC<AdminSkillsProps> = ({ skills, onRefresh }) =
     setLoading(true);
     setError(null);
     try {
+      const targetId = editingSkill._id || editingSkill.id;
       if (isNew) {
         await createSkill(editingSkill);
-      } else if (editingSkill.id) {
-        await updateSkill(editingSkill.id, editingSkill);
+      } else if (targetId) {
+        await updateSkill(targetId, { ...editingSkill, id: targetId, _id: targetId });
+      } else {
+        throw new Error('Skill ID is missing for update operation.');
       }
       setEditingSkill(null);
       onRefresh();
@@ -100,9 +108,11 @@ export const AdminSkills: React.FC<AdminSkillsProps> = ({ skills, onRefresh }) =
 
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {skills.map((s) => (
+        {skills.map((s) => {
+          const itemDocId = s._id || s.id;
+          return (
           <div
-            key={s.id}
+            key={itemDocId}
             className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between"
           >
             <div className="space-y-1">
@@ -122,21 +132,22 @@ export const AdminSkills: React.FC<AdminSkillsProps> = ({ skills, onRefresh }) =
             <div className="flex items-center gap-1.5">
               <button
                 onClick={() => startEditSkill(s)}
-                className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-indigo-600 transition-colors"
+                className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-indigo-600 transition-colors cursor-pointer"
                 title="Edit Skill"
               >
                 <Edit3 className="w-3.5 h-3.5" />
               </button>
               <button
-                onClick={() => handleDelete(s.id)}
-                className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 text-slate-500 hover:text-red-500 transition-colors"
+                onClick={() => handleDelete(itemDocId)}
+                className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 text-slate-500 hover:text-red-500 transition-colors cursor-pointer"
                 title="Delete Skill"
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Edit / Add Modal */}

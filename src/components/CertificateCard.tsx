@@ -6,7 +6,8 @@ import {
   Calendar, 
   KeyRound, 
   Eye, 
-  ExternalLink 
+  ExternalLink,
+  FileText 
 } from 'lucide-react';
 import { Certificate } from '../types.js';
 import { OrganizationLogo } from './OrganizationLogo.js';
@@ -17,6 +18,12 @@ interface CertificateCardProps {
 }
 
 export const CertificateCard: React.FC<CertificateCardProps> = ({ certificate, onSelectCertificate }) => {
+  const docUrl = certificate.certificateDocument?.url || certificate.fileUrl || '';
+  const isPdf = certificate.fileType === 'pdf' || 
+    certificate.certificateDocument?.fileType === 'pdf' || 
+    (docUrl && docUrl.toLowerCase().includes('.pdf')) ||
+    (docUrl && docUrl.startsWith('data:application/pdf'));
+
   return (
     <div
       id={`certificate-card-${certificate.id}`}
@@ -25,12 +32,23 @@ export const CertificateCard: React.FC<CertificateCardProps> = ({ certificate, o
       <div>
         {/* Certificate Thumbnail Header */}
         <div className="relative h-48 w-full overflow-hidden bg-slate-100 dark:bg-[#060810] border-b border-slate-200 dark:border-slate-800 flex items-center justify-center">
-          <img
-            src={certificate.fileUrl}
-            alt={certificate.title}
-            referrerPolicy="no-referrer"
-            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300 opacity-95 group-hover:opacity-100"
-          />
+          {isPdf ? (
+            <div className="w-full h-full bg-[#060810] flex flex-col items-center justify-center text-center p-4">
+              <div className="w-12 h-12 rounded-2xl bg-rose-500/15 border border-rose-500/40 flex items-center justify-center text-rose-400 mb-1 group-hover:scale-105 transition-transform shadow-md shadow-rose-950/40">
+                <FileText className="w-6 h-6" />
+              </div>
+              <span className="font-mono text-[11px] font-bold text-rose-300 uppercase tracking-wider">
+                Official PDF Document
+              </span>
+            </div>
+          ) : (
+            <img
+              src={docUrl || 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80'}
+              alt={certificate.title}
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300 opacity-95 group-hover:opacity-100"
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
           
           {/* Category Pill */}
@@ -114,14 +132,43 @@ export const CertificateCard: React.FC<CertificateCardProps> = ({ certificate, o
 
       {/* Action Buttons Footer */}
       <div className="p-6 pt-0 border-t border-slate-100 dark:border-slate-800 mt-4 flex items-center justify-between">
-        <button
-          onClick={() => onSelectCertificate(certificate)}
-          id={`btn-view-cert-${certificate.id}`}
-          className="px-3.5 py-2 rounded-lg bg-cyan-500/15 hover:bg-cyan-500 text-cyan-700 dark:text-cyan-300 hover:text-slate-950 border border-cyan-500/40 text-xs font-mono uppercase tracking-wider flex items-center gap-1.5 font-bold transition-all shadow-sm"
-        >
-          <Eye className="w-3.5 h-3.5" />
-          <span>View Details</span>
-        </button>
+        <div className="flex items-center gap-2">
+          {isPdf && docUrl ? (
+            <a
+              href={docUrl}
+              target="_blank"
+              rel="noreferrer"
+              id={`btn-view-cert-${certificate.id}`}
+              className="px-3.5 py-2 rounded-lg bg-rose-500/15 hover:bg-rose-500 text-rose-700 dark:text-rose-300 hover:text-white border border-rose-500/40 text-xs font-mono uppercase tracking-wider flex items-center gap-1.5 font-bold transition-all shadow-sm"
+              title="Open Certificate PDF in new tab"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>View Certificate</span>
+              <ExternalLink className="w-3 h-3 ml-0.5" />
+            </a>
+          ) : (
+            <button
+              onClick={() => onSelectCertificate(certificate)}
+              id={`btn-view-cert-${certificate.id}`}
+              className="px-3.5 py-2 rounded-lg bg-cyan-500/15 hover:bg-cyan-500 text-cyan-700 dark:text-cyan-300 hover:text-slate-950 border border-cyan-500/40 text-xs font-mono uppercase tracking-wider flex items-center gap-1.5 font-bold transition-all shadow-sm cursor-pointer"
+              title="View Certificate Document & Details"
+            >
+              <Eye className="w-3.5 h-3.5" />
+              <span>View Certificate</span>
+            </button>
+          )}
+
+          {isPdf && (
+            <button
+              onClick={() => onSelectCertificate(certificate)}
+              id={`btn-cert-details-${certificate.id}`}
+              className="p-2 rounded-lg text-slate-500 hover:text-cyan-400 hover:bg-slate-800/40 text-xs font-mono transition-colors cursor-pointer"
+              title="View full certificate details"
+            >
+              <Eye className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
 
         {certificate.verificationUrl ? (
           <a

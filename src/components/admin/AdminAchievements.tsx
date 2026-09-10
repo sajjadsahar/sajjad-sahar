@@ -36,10 +36,15 @@ export const AdminAchievements: React.FC<AdminAchievementsProps> = ({ achievemen
 
   const startEdit = (item: Achievement) => {
     setIsNew(false);
-    setEditingItem({ ...item });
+    const docId = item._id || item.id;
+    setEditingItem({ ...item, id: docId, _id: docId });
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id?: string) => {
+    if (!id) {
+      alert('Cannot delete: Achievement ID is missing.');
+      return;
+    }
     if (!window.confirm('Delete this achievement?')) return;
     try {
       await deleteAchievement(id);
@@ -59,10 +64,13 @@ export const AdminAchievements: React.FC<AdminAchievementsProps> = ({ achievemen
     setLoading(true);
     setError(null);
     try {
+      const targetId = editingItem._id || editingItem.id;
       if (isNew) {
         await createAchievement(editingItem);
-      } else if (editingItem.id) {
-        await updateAchievement(editingItem.id, editingItem);
+      } else if (targetId) {
+        await updateAchievement(targetId, { ...editingItem, id: targetId, _id: targetId });
+      } else {
+        throw new Error('Achievement ID is missing for update operation.');
       }
       setEditingItem(null);
       onRefresh();
@@ -96,8 +104,10 @@ export const AdminAchievements: React.FC<AdminAchievementsProps> = ({ achievemen
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {achievements.map((item) => (
-          <div key={item.id} className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+        {achievements.map((item) => {
+          const itemDocId = item._id || item.id;
+          return (
+          <div key={itemDocId} className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 font-semibold">
@@ -113,19 +123,20 @@ export const AdminAchievements: React.FC<AdminAchievementsProps> = ({ achievemen
             <div className="flex items-center justify-end gap-1.5 pt-3 mt-3 border-t border-slate-100 dark:border-slate-800">
               <button
                 onClick={() => startEdit(item)}
-                className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"
+                className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer"
               >
                 <Edit3 className="w-3.5 h-3.5" />
               </button>
               <button
-                onClick={() => handleDelete(item.id)}
-                className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 text-red-600"
+                onClick={() => handleDelete(itemDocId)}
+                className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 text-red-600 cursor-pointer"
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       {editingItem && (

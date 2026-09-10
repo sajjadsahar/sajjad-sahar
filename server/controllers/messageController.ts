@@ -41,18 +41,34 @@ export function getMessages(_req: AuthRequest, res: Response) {
 }
 
 export function markMessageRead(req: AuthRequest, res: Response) {
-  const read = req.body.read !== undefined ? Boolean(req.body.read) : true;
-  const updated = db.markMessageRead(req.params.id, read);
-  if (!updated) {
-    return res.status(404).json({ error: 'Message not found' });
+  try {
+    const targetId = req.params.id || req.body?._id || req.body?.id;
+    if (!targetId || targetId === 'undefined') {
+      return res.status(400).json({ error: 'Valid message ID is required' });
+    }
+    const read = req.body.read !== undefined ? Boolean(req.body.read) : true;
+    const updated = db.markMessageRead(targetId, read);
+    if (!updated) {
+      return res.status(404).json({ error: 'Message not found' });
+    }
+    return res.json({ success: true });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message || 'Failed to update message' });
   }
-  return res.json({ success: true });
 }
 
 export function deleteMessage(req: AuthRequest, res: Response) {
-  const deleted = db.deleteMessage(req.params.id);
-  if (!deleted) {
-    return res.status(404).json({ error: 'Message not found' });
+  try {
+    const targetId = req.params.id || req.body?._id || req.body?.id;
+    if (!targetId || targetId === 'undefined') {
+      return res.status(400).json({ error: 'Valid message ID is required for deletion' });
+    }
+    const deleted = db.deleteMessage(targetId);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Message not found' });
+    }
+    return res.json({ success: true, message: 'Message deleted successfully' });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message || 'Failed to delete message' });
   }
-  return res.json({ success: true, message: 'Message deleted successfully' });
 }

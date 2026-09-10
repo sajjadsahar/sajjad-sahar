@@ -34,7 +34,11 @@ export function createExperience(req: AuthRequest, res: Response) {
 
 export function updateExperience(req: AuthRequest, res: Response) {
   try {
-    const updated = db.updateExperience(req.params.id, req.body);
+    const targetId = req.params.id || req.body?._id || req.body?.id;
+    if (!targetId || targetId === 'undefined') {
+      return res.status(400).json({ error: 'Valid experience ID is required for update' });
+    }
+    const updated = db.updateExperience(targetId, req.body);
     if (!updated) {
       return res.status(404).json({ error: 'Experience not found' });
     }
@@ -45,9 +49,17 @@ export function updateExperience(req: AuthRequest, res: Response) {
 }
 
 export function deleteExperience(req: AuthRequest, res: Response) {
-  const deleted = db.deleteExperience(req.params.id);
-  if (!deleted) {
-    return res.status(404).json({ error: 'Experience not found' });
+  try {
+    const targetId = req.params.id || req.body?._id || req.body?.id;
+    if (!targetId || targetId === 'undefined') {
+      return res.status(400).json({ error: 'Valid experience ID is required for deletion' });
+    }
+    const deleted = db.deleteExperience(targetId);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Experience not found' });
+    }
+    return res.json({ success: true, message: 'Experience deleted successfully' });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message || 'Failed to delete experience' });
   }
-  return res.json({ success: true, message: 'Experience deleted successfully' });
 }

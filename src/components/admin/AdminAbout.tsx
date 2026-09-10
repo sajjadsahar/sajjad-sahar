@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   UserCheck, 
   Check, 
@@ -25,6 +25,12 @@ export const AdminAbout: React.FC<AdminAboutProps> = ({ profile, onRefresh }) =>
   const [enhancing, setEnhancing] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (profile) {
+      setFormData({ ...profile });
+    }
+  }, [profile]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

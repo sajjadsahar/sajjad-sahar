@@ -5,6 +5,7 @@ import {
   createOrEditImage, 
   enhanceTechnicalText 
 } from '../gemini.js';
+import { storeBase64Document } from '../utils/storage.js';
 
 export async function generateAIImage(req: AuthRequest, res: Response) {
   try {
@@ -55,22 +56,25 @@ export async function enhanceText(req: AuthRequest, res: Response) {
   }
 }
 
-export function handleUpload(req: AuthRequest, res: Response) {
+export async function handleUpload(req: AuthRequest, res: Response) {
   try {
     const { base64Data, filename, fileType } = req.body;
     if (!base64Data) {
       return res.status(400).json({ error: 'base64Data is required' });
     }
 
-    const isPdf = fileType === 'pdf' || (filename && filename.toLowerCase().endsWith('.pdf'));
-    const prefix = isPdf ? 'data:application/pdf;base64,' : 'data:image/jpeg;base64,';
-    const finalUrl = base64Data.startsWith('data:') ? base64Data : `${prefix}${base64Data}`;
+    const stored = await storeBase64Document(
+      base64Data, 
+      filename || 'uploaded-file', 
+      fileType
+    );
 
     return res.json({
       success: true,
-      url: finalUrl,
-      fileType: isPdf ? 'pdf' : 'image',
-      filename: filename || 'uploaded-file'
+      url: stored.url,
+      publicId: stored.publicId,
+      fileType: stored.fileType,
+      filename: stored.originalName
     });
   } catch (err: any) {
     return res.status(500).json({ error: err.message || 'Upload failed' });

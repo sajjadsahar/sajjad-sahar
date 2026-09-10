@@ -16,7 +16,11 @@ interface AdminMessagesProps {
 }
 
 export const AdminMessages: React.FC<AdminMessagesProps> = ({ messages, onRefresh }) => {
-  const handleToggleRead = async (id: string) => {
+  const handleToggleRead = async (id?: string) => {
+    if (!id) {
+      alert('Cannot update: Message ID is missing.');
+      return;
+    }
     try {
       await toggleMessageRead(id);
       onRefresh();
@@ -25,7 +29,11 @@ export const AdminMessages: React.FC<AdminMessagesProps> = ({ messages, onRefres
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id?: string) => {
+    if (!id) {
+      alert('Cannot delete: Message ID is missing.');
+      return;
+    }
     if (!window.confirm('Delete this message?')) return;
     try {
       await deleteMessage(id);
@@ -50,9 +58,11 @@ export const AdminMessages: React.FC<AdminMessagesProps> = ({ messages, onRefres
       </div>
 
       <div className="space-y-3">
-        {messages.map((msg) => (
+        {messages.map((msg) => {
+          const itemDocId = msg._id || msg.id;
+          return (
           <div
-            key={msg.id}
+            key={itemDocId}
             className={`p-5 rounded-2xl bg-white dark:bg-slate-900 border transition-all ${
               msg.read 
                 ? 'border-slate-200 dark:border-slate-800 opacity-80' 
@@ -87,8 +97,8 @@ export const AdminMessages: React.FC<AdminMessagesProps> = ({ messages, onRefres
 
             <div className="pt-4 mt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
               <button
-                onClick={() => handleToggleRead(msg.id)}
-                className="text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 flex items-center gap-1.5"
+                onClick={() => handleToggleRead(itemDocId)}
+                className="text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 flex items-center gap-1.5 cursor-pointer"
               >
                 <CheckCircle2 className="w-4 h-4" />
                 <span>{msg.read ? 'Mark as Unread' : 'Mark as Read'}</span>
@@ -103,8 +113,8 @@ export const AdminMessages: React.FC<AdminMessagesProps> = ({ messages, onRefres
                   <span>Reply via Email</span>
                 </a>
                 <button
-                  onClick={() => handleDelete(msg.id)}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 transition-colors"
+                  onClick={() => handleDelete(itemDocId)}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 transition-colors cursor-pointer"
                   title="Delete Message"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -112,7 +122,8 @@ export const AdminMessages: React.FC<AdminMessagesProps> = ({ messages, onRefres
               </div>
             </div>
           </div>
-        ))}
+          );
+        })}
 
         {messages.length === 0 && (
           <div className="p-12 text-center text-slate-400 text-xs rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">

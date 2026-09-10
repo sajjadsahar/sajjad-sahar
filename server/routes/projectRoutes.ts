@@ -14,6 +14,7 @@ router.get('/', getProjects);
 router.get('/:idOrSlug', getProjectByIdOrSlug);
 router.post('/', authenticateAdmin, createProject);
 router.put('/:id', authenticateAdmin, updateProject);
+router.patch('/:id', authenticateAdmin, updateProject);
 router.delete('/:id', authenticateAdmin, deleteProject);
 
 export default router;

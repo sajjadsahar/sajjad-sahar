@@ -12,6 +12,7 @@ const router = Router();
 router.get('/', getSkills);
 router.post('/', authenticateAdmin, createSkill);
 router.put('/:id', authenticateAdmin, updateSkill);
+router.patch('/:id', authenticateAdmin, updateSkill);
 router.delete('/:id', authenticateAdmin, deleteSkill);
 
 export default router;

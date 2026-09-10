@@ -13,6 +13,13 @@ export type CertificateCategory =
   | 'Other' 
   | string;
 
+export interface CertificateDocument {
+  url: string;
+  publicId?: string;
+  fileType: 'image' | 'pdf' | string;
+  originalName?: string;
+}
+
 export interface Certificate {
   id: string;
   title: string;
@@ -22,6 +29,7 @@ export interface Certificate {
   certificateId: string;
   fileUrl: string;
   fileType: 'image' | 'pdf';
+  certificateDocument?: CertificateDocument;
   skillsCovered: string[];
   description: string;
   verificationUrl: string;

@@ -30,7 +30,11 @@ export function createAchievement(req: AuthRequest, res: Response) {
 
 export function updateAchievement(req: AuthRequest, res: Response) {
   try {
-    const updated = db.updateAchievement(req.params.id, req.body);
+    const targetId = req.params.id || req.body?._id || req.body?.id;
+    if (!targetId || targetId === 'undefined') {
+      return res.status(400).json({ error: 'Valid achievement ID is required for update' });
+    }
+    const updated = db.updateAchievement(targetId, req.body);
     if (!updated) {
       return res.status(404).json({ error: 'Achievement not found' });
     }
@@ -41,9 +45,17 @@ export function updateAchievement(req: AuthRequest, res: Response) {
 }
 
 export function deleteAchievement(req: AuthRequest, res: Response) {
-  const deleted = db.deleteAchievement(req.params.id);
-  if (!deleted) {
-    return res.status(404).json({ error: 'Achievement not found' });
+  try {
+    const targetId = req.params.id || req.body?._id || req.body?.id;
+    if (!targetId || targetId === 'undefined') {
+      return res.status(400).json({ error: 'Valid achievement ID is required for deletion' });
+    }
+    const deleted = db.deleteAchievement(targetId);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Achievement not found' });
+    }
+    return res.json({ success: true, message: 'Achievement deleted successfully' });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message || 'Failed to delete achievement' });
   }
-  return res.json({ success: true, message: 'Achievement deleted successfully' });
 }

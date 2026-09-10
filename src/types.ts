@@ -9,6 +9,7 @@ export interface SocialLinks {
 
 export interface Profile {
   id?: string;
+  _id?: string;
   name: string;
   title: string;
   field: string;
@@ -33,6 +34,7 @@ export type SkillProficiency = 'Beginner' | 'Intermediate' | 'Advanced' | 'Learn
 
 export interface Skill {
   id: string;
+  _id?: string;
   name: string;
   category: SkillCategory;
   proficiency: SkillProficiency;
@@ -46,6 +48,7 @@ export type ProjectCategory = 'All' | 'Web' | 'MERN' | 'Java' | 'C++' | 'AI/ML' 
 
 export interface Project {
   id: string;
+  _id?: string;
   title: string;
   slug: string;
   description: string;
@@ -78,8 +81,16 @@ export type CertificateCategory =
   | 'Other' 
   | string;
 
+export interface CertificateDocument {
+  url: string;
+  publicId?: string;
+  fileType: 'image' | 'pdf' | string;
+  originalName?: string;
+}
+
 export interface Certificate {
   id: string;
+  _id?: string;
   title: string;
   issuingOrganization: string;
   issueDate: string;
@@ -87,6 +98,7 @@ export interface Certificate {
   certificateId: string;
   fileUrl: string; // URL or base64 (image/pdf)
   fileType: 'image' | 'pdf';
+  certificateDocument?: CertificateDocument;
   skillsCovered: string[];
   description: string;
   verificationUrl: string;
@@ -97,6 +109,7 @@ export interface Certificate {
 
 export interface Experience {
   id: string;
+  _id?: string;
   organization: string;
   position: string;
   type: 'Education' | 'Experience' | 'Leadership';
@@ -111,6 +124,7 @@ export interface Experience {
 
 export interface Achievement {
   id: string;
+  _id?: string;
   title: string;
   organization: string;
   date: string;
@@ -122,6 +136,7 @@ export interface Achievement {
 
 export interface Blog {
   id: string;
+  _id?: string;
   title: string;
   slug: string;
   excerpt: string;
@@ -137,6 +152,7 @@ export interface Blog {
 
 export interface ContactMessage {
   id: string;
+  _id?: string;
   name: string;
   email: string;
   subject: string;

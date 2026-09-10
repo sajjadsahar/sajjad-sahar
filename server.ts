@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import dotenv from 'dotenv';
 import { createServer as createViteServer } from 'vite';
 import { apiRouter } from './server/routes.js';
@@ -18,6 +19,14 @@ async function startServer() {
 
   // Serve static public assets (photos, resumes, etc.)
   app.use(express.static(path.join(process.cwd(), 'public')));
+
+  // Serve static uploads (certificates, images, PDFs)
+  const uploadsDir = path.join(process.cwd(), 'server', 'uploads');
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+  app.use('/uploads', express.static(uploadsDir));
+  app.use('/api/uploads', express.static(uploadsDir));
 
   // API Health check
   app.get('/api/health', (_req, res) => {

@@ -12,6 +12,7 @@ const router = Router();
 router.get('/', getAchievements);
 router.post('/', authenticateAdmin, createAchievement);
 router.put('/:id', authenticateAdmin, updateAchievement);
+router.patch('/:id', authenticateAdmin, updateAchievement);
 router.delete('/:id', authenticateAdmin, deleteAchievement);
 
 export default router;

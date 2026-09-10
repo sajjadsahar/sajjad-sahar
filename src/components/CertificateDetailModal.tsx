@@ -47,7 +47,11 @@ export const CertificateDetailModal: React.FC<CertificateDetailModalProps> = ({ 
     setTimeout(() => setCopiedId(false), 2000);
   };
 
-  const isPdf = certificate.fileType === 'pdf' || (certificate.fileUrl && certificate.fileUrl.endsWith('.pdf'));
+  const docUrl = certificate.certificateDocument?.url || certificate.fileUrl || '';
+  const isPdf = certificate.fileType === 'pdf' || 
+    certificate.certificateDocument?.fileType === 'pdf' || 
+    (docUrl && docUrl.toLowerCase().includes('.pdf')) ||
+    (docUrl && docUrl.startsWith('data:application/pdf'));
 
   return (
     <div 
@@ -97,24 +101,28 @@ export const CertificateDetailModal: React.FC<CertificateDetailModalProps> = ({ 
           <div className="rounded-2xl overflow-hidden border border-slate-700/80 bg-[#060810] flex items-center justify-center relative min-h-[260px] sm:min-h-[360px] shadow-inner">
             {isPdf ? (
               <div className="w-full h-96 flex flex-col items-center justify-center p-8 text-center text-white space-y-4">
-                <FileText className="w-16 h-16 text-cyan-400" />
+                <div className="w-16 h-16 rounded-2xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400">
+                  <FileText className="w-9 h-9" />
+                </div>
                 <div>
                   <h4 className="font-bold text-lg text-white">{certificate.title} (PDF)</h4>
                   <p className="text-xs text-slate-300 mt-1">Official Portable Document Format</p>
                 </div>
-                <a
-                  href={certificate.fileUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-lg shadow-cyan-500/25 transition-all"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  <span>Open Full PDF in New Tab</span>
-                </a>
+                {docUrl && (
+                  <a
+                    href={docUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-lg shadow-cyan-500/25 transition-all"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    <span>Open Full PDF in New Tab</span>
+                  </a>
+                )}
               </div>
             ) : (
               <img
-                src={certificate.fileUrl}
+                src={docUrl || 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80'}
                 alt={certificate.title}
                 referrerPolicy="no-referrer"
                 className="max-h-[460px] w-auto object-contain mx-auto"
@@ -273,15 +281,15 @@ export const CertificateDetailModal: React.FC<CertificateDetailModalProps> = ({ 
               </div>
             )}
 
-            {certificate.fileUrl && (
+            {docUrl && (
               <a
-                href={certificate.fileUrl}
+                href={docUrl}
                 target="_blank"
                 download
                 className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs sm:text-sm flex items-center gap-1.5 border border-slate-700 transition-colors"
               >
                 <Download className="w-4 h-4" />
-                <span>Download</span>
+                <span>{isPdf ? 'Download PDF' : 'Download Document'}</span>
               </a>
             )}
           </div>

@@ -69,7 +69,11 @@ export function createProject(req: AuthRequest, res: Response) {
 
 export function updateProject(req: AuthRequest, res: Response) {
   try {
-    const updated = db.updateProject(req.params.id, req.body);
+    const targetId = req.params.id || req.body?._id || req.body?.id;
+    if (!targetId || targetId === 'undefined') {
+      return res.status(400).json({ error: 'Valid project ID is required for update' });
+    }
+    const updated = db.updateProject(targetId, req.body);
     if (!updated) {
       return res.status(404).json({ error: 'Project not found' });
     }
@@ -80,9 +84,17 @@ export function updateProject(req: AuthRequest, res: Response) {
 }
 
 export function deleteProject(req: AuthRequest, res: Response) {
-  const deleted = db.deleteProject(req.params.id);
-  if (!deleted) {
-    return res.status(404).json({ error: 'Project not found' });
+  try {
+    const targetId = req.params.id || req.body?._id || req.body?.id;
+    if (!targetId || targetId === 'undefined') {
+      return res.status(400).json({ error: 'Valid project ID is required for deletion' });
+    }
+    const deleted = db.deleteProject(targetId);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+    return res.json({ success: true, message: 'Project deleted successfully' });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message || 'Failed to delete project' });
   }
-  return res.json({ success: true, message: 'Project deleted successfully' });
 }

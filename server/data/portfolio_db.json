@@ -61,7 +61,8 @@
       ],
       "challenges": "Managing atomic database transactions for overlapping reservation dates and optimizing image upload pipelines for property photo galleries.",
       "whatILearned": "Mastered MongoDB indexing strategies, RESTful API versioning, and clean state management across complex booking workflows.",
-      "views": 245
+      "views": 245,
+      "_id": "proj-1"
     },
     {
       "id": "proj-2",
@@ -89,7 +90,8 @@
       ],
       "challenges": "Structuring clean inheritance and polymorphism across departmental officers while ensuring data privacy across case files.",
       "whatILearned": "Deepened practical understanding of SOLID principles, relational schema normalization, and thread safety in Java desktop apps.",
-      "views": 180
+      "views": 180,
+      "_id": "proj-2"
     },
     {
       "id": "proj-3",
@@ -116,7 +118,8 @@
       ],
       "challenges": "Preventing memory fragmentation and managing linked-list node integrity during bulk deletions and case reassignment.",
       "whatILearned": "Gained profound appreciation for pointers, hardware memory limits, and optimal algorithmic time complexities.",
-      "views": 154
+      "views": 154,
+      "_id": "proj-3"
     },
     {
       "id": "proj-4",
@@ -143,7 +146,8 @@
       ],
       "challenges": "Handling race conditions when two users attempt to reserve the same room at the exact same millisecond.",
       "whatILearned": "Implemented row-level locking (SELECT ... FOR UPDATE) and stored procedures for mission-critical concurrency control.",
-      "views": 132
+      "views": 132,
+      "_id": "proj-4"
     },
     {
       "id": "proj-5",
@@ -170,10 +174,36 @@
       ],
       "challenges": "Handling noisy patient vocabulary and misspellings in free-form medical symptom inputs.",
       "whatILearned": "Text normalization techniques, data balancing with SMOTE, and deploying containerized ML models.",
-      "views": 198
+      "views": 198,
+      "_id": "proj-5"
     }
   ],
   "certificates": [
+    {
+      "title": "data",
+      "issuingOrganization": "cisco",
+      "issueDate": "September 2026",
+      "expiryDate": "Never",
+      "certificateId": "225534",
+      "fileUrl": "/uploads/WhatsApp_Image_2026-09-07_at_1_37_23_AM_1789029637784.jpeg",
+      "fileType": "image",
+      "certificateDocument": {
+        "url": "/uploads/WhatsApp_Image_2026-09-07_at_1_37_23_AM_1789029637784.jpeg",
+        "publicId": "WhatsApp_Image_2026-09-07_at_1_37_23_AM_1789029637784.jpeg",
+        "fileType": "image",
+        "originalName": "WhatsApp Image 2026-09-07 at 1.37.23 AM.jpeg"
+      },
+      "skillsCovered": [
+        "iiuihuihi"
+      ],
+      "description": "iuuihiu jhp",
+      "verificationUrl": "jh",
+      "category": "Database",
+      "featured": false,
+      "id": "cert-1789029637785",
+      "views": 0,
+      "_id": "cert-1789029637785"
+    },
     {
       "id": "cert-1",
       "title": "Data Science Essentials With Python",
@@ -181,7 +211,7 @@
       "issueDate": "July 25, 2026",
       "expiryDate": "Never",
       "certificateId": "a11287f8-e69f-44d0-ba21-c48b171da1f3",
-      "fileUrl": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
+      "fileUrl": "/uploads/Screenshot_2026-09-09_025050_1789029407562.png",
       "fileType": "image",
       "skillsCovered": [
         "Python",
@@ -194,7 +224,14 @@
       "verificationUrl": "",
       "category": "Data Science / Programming / AI",
       "featured": true,
-      "views": 240
+      "views": 240,
+      "certificateDocument": {
+        "url": "/uploads/Screenshot_2026-09-09_025050_1789029407562.png",
+        "publicId": "Screenshot_2026-09-09_025050_1789029407562.png",
+        "fileType": "image",
+        "originalName": "Screenshot 2026-09-09 025050.png"
+      },
+      "_id": "cert-1"
     },
     {
       "id": "cert-2",
@@ -203,7 +240,7 @@
       "issueDate": "July 2026",
       "expiryDate": "No Expiration",
       "certificateId": "25558633",
-      "fileUrl": "https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=1200&q=80",
+      "fileUrl": "/uploads/Screenshot_2026-09-09_025414_1789029438512.png",
       "fileType": "image",
       "skillsCovered": [
         "Google AI Studio",
@@ -216,7 +253,14 @@
       "verificationUrl": "",
       "category": "Artificial Intelligence / Generative AI",
       "featured": true,
-      "views": 310
+      "views": 310,
+      "certificateDocument": {
+        "url": "/uploads/Screenshot_2026-09-09_025414_1789029438512.png",
+        "publicId": "Screenshot_2026-09-09_025414_1789029438512.png",
+        "fileType": "image",
+        "originalName": "Screenshot 2026-09-09 025414.png"
+      },
+      "_id": "cert-2"
     },
     {
       "id": "cert-3",
@@ -225,7 +269,7 @@
       "issueDate": "July 9, 2026",
       "expiryDate": "Never",
       "certificateId": "a5151d34-4d06-40f7-aa5d-4114141267b5",
-      "fileUrl": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80",
+      "fileUrl": "/uploads/Screenshot_2026-09-09_025608_1789029454006.png",
       "fileType": "image",
       "skillsCovered": [
         "Google Cloud",
@@ -238,7 +282,14 @@
       "verificationUrl": "",
       "category": "Artificial Intelligence / Cloud / Generative AI",
       "featured": true,
-      "views": 285
+      "views": 285,
+      "certificateDocument": {
+        "url": "/uploads/Screenshot_2026-09-09_025608_1789029454006.png",
+        "publicId": "Screenshot_2026-09-09_025608_1789029454006.png",
+        "fileType": "image",
+        "originalName": "Screenshot 2026-09-09 025608.png"
+      },
+      "_id": "cert-3"
     },
     {
       "id": "cert-4",
@@ -247,7 +298,7 @@
       "issueDate": "June 15, 2026",
       "expiryDate": "Never",
       "certificateId": "373e9741-348b-4d58-b015-b71ef6e2125b",
-      "fileUrl": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&q=80",
+      "fileUrl": "/uploads/Screenshot_2026-09-09_024928_1789029378834.png",
       "fileType": "image",
       "skillsCovered": [
         "Artificial Intelligence",
@@ -259,7 +310,14 @@
       "verificationUrl": "",
       "category": "Artificial Intelligence",
       "featured": false,
-      "views": 195
+      "views": 195,
+      "certificateDocument": {
+        "url": "/uploads/Screenshot_2026-09-09_024928_1789029378834.png",
+        "publicId": "Screenshot_2026-09-09_024928_1789029378834.png",
+        "fileType": "image",
+        "originalName": "Screenshot 2026-09-09 024928.png"
+      },
+      "_id": "cert-4"
     },
     {
       "id": "cert-5",
@@ -268,7 +326,7 @@
       "issueDate": "June 2026",
       "expiryDate": "No Expiration",
       "certificateId": "2uxkfhf8ooze",
-      "fileUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80",
+      "fileUrl": "/uploads/Screenshot_2026-09-09_024834_1789029356029.png",
       "fileType": "image",
       "skillsCovered": [
         "AI Fluency",
@@ -281,7 +339,14 @@
       "verificationUrl": "",
       "category": "Artificial Intelligence / AI Literacy",
       "featured": true,
-      "views": 230
+      "views": 230,
+      "certificateDocument": {
+        "url": "/uploads/Screenshot_2026-09-09_024834_1789029356029.png",
+        "publicId": "Screenshot_2026-09-09_024834_1789029356029.png",
+        "fileType": "image",
+        "originalName": "Screenshot 2026-09-09 024834.png"
+      },
+      "_id": "cert-5"
     },
     {
       "id": "cert-6",
@@ -290,7 +355,7 @@
       "issueDate": "April 2026",
       "expiryDate": "No Expiration",
       "certificateId": "69a9928fae16f2c65303b794",
-      "fileUrl": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80",
+      "fileUrl": "/uploads/Screenshot_2026-09-09_024644_1789029329588.png",
       "fileType": "image",
       "skillsCovered": [
         "Web Development",
@@ -304,7 +369,14 @@
       "verificationUrl": "",
       "category": "Web Development / MERN Stack",
       "featured": false,
-      "views": 210
+      "views": 210,
+      "certificateDocument": {
+        "url": "/uploads/Screenshot_2026-09-09_024644_1789029329588.png",
+        "publicId": "Screenshot_2026-09-09_024644_1789029329588.png",
+        "fileType": "image",
+        "originalName": "Screenshot 2026-09-09 024644.png"
+      },
+      "_id": "cert-6"
     }
   ],
   "skills": [
@@ -314,7 +386,8 @@
       "category": "Programming",
       "proficiency": "Advanced",
       "yearsOfExperience": "3 yrs",
-      "featured": true
+      "featured": true,
+      "_id": "sk-1"
     },
     {
       "id": "sk-2",
@@ -322,7 +395,8 @@
       "category": "Programming",
       "proficiency": "Advanced",
       "yearsOfExperience": "3 yrs",
-      "featured": true
+      "featured": true,
+      "_id": "sk-2"
     },
     {
       "id": "sk-3",
@@ -330,7 +404,8 @@
       "category": "Programming",
       "proficiency": "Advanced",
       "yearsOfExperience": "3 yrs",
-      "featured": true
+      "featured": true,
+      "_id": "sk-3"
     },
     {
       "id": "sk-4",
@@ -338,7 +413,8 @@
       "category": "Programming",
       "proficiency": "Intermediate",
       "yearsOfExperience": "2 yrs",
-      "featured": true
+      "featured": true,
+      "_id": "sk-4"
     },
     {
       "id": "sk-5",
@@ -346,7 +422,8 @@
       "category": "Frontend",
       "proficiency": "Advanced",
       "yearsOfExperience": "2.5 yrs",
-      "featured": true
+      "featured": true,
+      "_id": "sk-5"
     },
     {
       "id": "sk-6",
@@ -354,7 +431,8 @@
       "category": "Frontend",
       "proficiency": "Advanced",
       "yearsOfExperience": "4 yrs",
-      "featured": false
+      "featured": false,
+      "_id": "sk-6"
     },
     {
       "id": "sk-7",
@@ -362,7 +440,8 @@
       "category": "Frontend",
       "proficiency": "Advanced",
       "yearsOfExperience": "3 yrs",
-      "featured": true
+      "featured": true,
+      "_id": "sk-7"
     },
     {
       "id": "sk-8",
@@ -370,7 +449,8 @@
       "category": "Frontend",
       "proficiency": "Advanced",
       "yearsOfExperience": "2 yrs",
-      "featured": false
+      "featured": false,
+      "_id": "sk-8"
     },
     {
       "id": "sk-9",
@@ -378,7 +458,8 @@
       "category": "Frontend",
       "proficiency": "Intermediate",
       "yearsOfExperience": "1.5 yrs",
-      "featured": false
+      "featured": false,
+      "_id": "sk-9"
     },
     {
       "id": "sk-10",
@@ -386,7 +467,8 @@
       "category": "Backend",
       "proficiency": "Advanced",
       "yearsOfExperience": "2.5 yrs",
-      "featured": true
+      "featured": true,
+      "_id": "sk-10"
     },
     {
       "id": "sk-11",
@@ -394,7 +476,8 @@
       "category": "Backend",
       "proficiency": "Advanced",
       "yearsOfExperience": "2.5 yrs",
-      "featured": true
+      "featured": true,
+      "_id": "sk-11"
     },
     {
       "id": "sk-12",
@@ -402,7 +485,8 @@
       "category": "Backend",
       "proficiency": "Advanced",
       "yearsOfExperience": "3 yrs",
-      "featured": true
+      "featured": true,
+      "_id": "sk-12"
     },
     {
       "id": "sk-13",
@@ -410,7 +494,8 @@
       "category": "Backend",
       "proficiency": "Advanced",
       "yearsOfExperience": "2 yrs",
-      "featured": false
+      "featured": false,
+      "_id": "sk-13"
     },
     {
       "id": "sk-14",
@@ -418,7 +503,8 @@
       "category": "Database",
       "proficiency": "Advanced",
       "yearsOfExperience": "2.5 yrs",
-      "featured": true
+      "featured": true,
+      "_id": "sk-14"
     },
     {
       "id": "sk-15",
@@ -426,7 +512,8 @@
       "category": "Database",
       "proficiency": "Advanced",
       "yearsOfExperience": "2 yrs",
-      "featured": false
+      "featured": false,
+      "_id": "sk-15"
     },
     {
       "id": "sk-16",
@@ -434,7 +521,8 @@
       "category": "Database",
       "proficiency": "Advanced",
       "yearsOfExperience": "2.5 yrs",
-      "featured": true
+      "featured": true,
+      "_id": "sk-16"
     },
     {
       "id": "sk-17",
@@ -442,7 +530,8 @@
       "category": "Tools",
       "proficiency": "Advanced",
       "yearsOfExperience": "3.5 yrs",
-      "featured": true
+      "featured": true,
+      "_id": "sk-17"
     },
     {
       "id": "sk-18",
@@ -450,7 +539,8 @@
       "category": "Tools",
       "proficiency": "Advanced",
       "yearsOfExperience": "4 yrs",
-      "featured": false
+      "featured": false,
+      "_id": "sk-18"
     },
     {
       "id": "sk-19",
@@ -458,7 +548,8 @@
       "category": "Tools",
       "proficiency": "Advanced",
       "yearsOfExperience": "2.5 yrs",
-      "featured": false
+      "featured": false,
+      "_id": "sk-19"
     },
     {
       "id": "sk-20",
@@ -466,7 +557,8 @@
       "category": "AI / Machine Learning",
       "proficiency": "Intermediate",
       "yearsOfExperience": "1.5 yrs",
-      "featured": true
+      "featured": true,
+      "_id": "sk-20"
     },
     {
       "id": "sk-21",
@@ -474,7 +566,8 @@
       "category": "AI / Machine Learning",
       "proficiency": "Intermediate",
       "yearsOfExperience": "1 yr",
-      "featured": false
+      "featured": false,
+      "_id": "sk-21"
     },
     {
       "id": "sk-22",
@@ -482,7 +575,8 @@
       "category": "AI / Machine Learning",
       "proficiency": "Intermediate",
       "yearsOfExperience": "1 yr",
-      "featured": true
+      "featured": true,
+      "_id": "sk-22"
     },
     {
       "id": "sk-23",
@@ -490,7 +584,8 @@
       "category": "AI / Machine Learning",
       "proficiency": "Learning",
       "yearsOfExperience": "1 yr",
-      "featured": true
+      "featured": true,
+      "_id": "sk-23"
     }
   ],
   "experience": [
@@ -516,7 +611,8 @@
         "Database Systems",
         "Algorithms",
         "Software Design"
-      ]
+      ],
+      "_id": "exp-1"
     },
     {
       "id": "exp-2",
@@ -537,7 +633,8 @@
         "MERN Stack",
         "Git",
         "Clean Code Architecture"
-      ]
+      ],
+      "_id": "exp-2"
     },
     {
       "id": "exp-3",
@@ -560,7 +657,8 @@
         "MongoDB",
         "Tailwind CSS",
         "Docker"
-      ]
+      ],
+      "_id": "exp-3"
     }
   ],
   "achievements": [
@@ -571,7 +669,8 @@
       "date": "2024-11",
       "category": "Academic",
       "description": "Awarded highest academic honor and merit distinction for maintaining a 3.98 CGPA in Software Engineering.",
-      "featured": true
+      "featured": true,
+      "_id": "ach-1"
     },
     {
       "id": "ach-2",
@@ -580,7 +679,8 @@
       "date": "2024-05",
       "category": "Competition",
       "description": "Secured 1st position among 40+ competitor teams by solving complex graph and dynamic programming challenges in record time.",
-      "featured": true
+      "featured": true,
+      "_id": "ach-2"
     },
     {
       "id": "ach-3",
@@ -589,7 +689,8 @@
       "date": "2023-09",
       "category": "Scholarship",
       "description": "Continuous 100% academic merit tuition scholarship awarded based on semester GPA excellence.",
-      "featured": true
+      "featured": true,
+      "_id": "ach-3"
     },
     {
       "id": "ach-4",
@@ -598,7 +699,8 @@
       "date": "2024-03",
       "category": "Hackathon",
       "description": "Engineered a real-time crisis dispatch prototype using WebSockets and location intelligence within 36 continuous hours.",
-      "featured": false
+      "featured": false,
+      "_id": "ach-4"
     }
   ],
   "blogs": [
@@ -621,7 +723,8 @@
       "publishedAt": "2025-02-14",
       "readingTimeMinutes": 6,
       "content": "## Why Architecture Matters in Modern Full-Stack Development\n\nWhen engineering web applications that handle real-time users, the traditional \"tutorial\" way of putting business logic in route handlers quickly breaks down. In building my Wanderlust project, I adopted a clean multi-layer pattern:\n\n### 1. Controller and Service Separation\nInstead of embedding database calls inside Express request handlers:\n- **Routes** define endpoints and apply authentication middlewares.\n- **Controllers** handle HTTP status codes, request validation, and responses.\n- **Services** encapsulate the raw business logic and database queries.\n\n### 2. Efficient MongoDB Indexing\nWithout appropriate compound indexes, querying properties by price range and location results in full collection scans:\n```javascript\nlistingSchema.index({ location: 'text', price: 1 });\n```\nThis reduced our query response latency from 320ms to under 18ms under simulated concurrent traffic.\n\n### 3. Bulletproof JWT Security\nAlways store sensitive access tokens in secure HTTP-only cookies or well-guarded memory closures to protect users against Cross-Site Scripting (XSS).",
-      "views": 312
+      "views": 312,
+      "_id": "blog-1"
     },
     {
       "id": "blog-2",
@@ -641,7 +744,8 @@
       "publishedAt": "2025-01-20",
       "readingTimeMinutes": 5,
       "content": "## Bridging High-Level and Systems Programming\n\nMany junior developers start directly with frameworks like React and never understand what happens underneath the browser runtime or V8 engine.\n\n### The Power of Explicit Memory Management\nBuilding my **FIR Management System** entirely using custom linked lists in C++ forced me to grapple with:\n- Stack vs Heap memory allocations\n- Dynamic pointer arithmetic\n- Preventing memory leaks with clean destructors\n\n```cpp\nstruct CaseNode {\n    int firNumber;\n    std::string incidentDescription;\n    CaseNode* next;\n    CaseNode(int id, std::string desc) : firNumber(id), incidentDescription(desc), next(nullptr) {}\n};\n```\n\nWhen you understand how nodes link together in memory, you write significantly faster and leaner JavaScript and Node.js code!",
-      "views": 245
+      "views": 245,
+      "_id": "blog-2"
     }
   ],
   "messages": [
@@ -653,15 +757,16 @@
       "message": "Hello Sajjad, I reviewed your academic record and recent projects. Your CGPA and practical development skills are impressive. Would you be open to discussing an undergraduate research opportunity?",
       "createdAt": "2025-02-18T10:30:00.000Z",
       "read": false,
-      "replied": false
+      "replied": false,
+      "_id": "msg-1"
     }
   ],
   "analytics": {
-    "pageViews": 1430,
-    "projectViews": 909,
+    "pageViews": 1440,
+    "projectViews": 911,
     "certificateViews": 1240,
     "blogViews": 557,
-    "messageCount": 1,
+    "messageCount": 2,
     "dailyViews": [
       {
         "date": "2025-02-28",
@@ -697,7 +802,11 @@
       },
       {
         "date": "2026-09-09",
-        "views": 2
+        "views": 6
+      },
+      {
+        "date": "2026-09-10",
+        "views": 6
       }
     ]
   }
